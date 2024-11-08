@@ -16,28 +16,150 @@ player_inventory([]).
 
 % Początkowa ilość pieniędzy gracza
 player_money(0).
-
 /* Definicja lokalizacji */
 % location(Nazwa, Opis, Lista_przedmiotów)
+
+% Lokacja startowa: Pokój Marka
 location(pokoj_marka, 'Pokój Marka', [oszczednosci, giga_okularki, koszulka_z_amppz]).
+
+% Pokój Babci
 location(pokoj_babci, 'Pokój Babci', [skarpetka, lupa, stare_zdjecie]).
-location(dom_marka, 'Dom Marka', []).
-location(targowek, 'Targówek', [mega_sejf]).
-location(makro, 'Makro', []).
+
+% Dom Marka - główne miejsce domówki
+location(dom_marka, 'Dom Marka', [mega_sejf, mapa_targowka]).
+
+% Dom Marka - szczegóły podczas domówki
+location(epicka_lazienka, 'Epicka Łazienka', [siatka_pelna_niespodzianek]).
+location(parkiet, 'Parkiet na domówce', []).
+location(drzwi_wejsciowe, 'Drzwi wejściowe', []).
+
+% Targówek i okoliczne ulice
+location(targowek, 'Targówek', []).
+location(jorskiego, 'Ulica Jórskiego', [szlugi, pusta_puszka_kuflowe_mocne, metalowy_pret, cegla]).
+location(radzyminska, 'Ulica Radzymińska', [klucz_francuski, kastet, kebab, smieci]).
+location(blokowa, 'Ulica Blokowa', [baseball, tulipan_po_krolewskim, piwo, doritosy]).
+location(ogrodnicza, 'Ulica Ogrodnicza', [energol, strzykawka, gazeta, malpka_z_zabki]).
+location(spot_sprzedazy_proszku, 'Spot do sprzedaży proszku', [proszek_do_prania_vizir]).
+
+% Sklep Makro i jego alejki
+location(makro, 'Makro - Główne Wejście', []).
+location(alejka_alkohol, 'Alejka z alkoholem', [zubrowka, duch_puszczy, jager, harnas, komandos, orzechowka, smerf]).
+location(alejka_jedzenie, 'Alejka z jedzeniem', [pizza_pepperoni, pizza_hawajska, laysy_solone, laysy_paprykowe, doritosy_serowe, cheetosy_ketchup]).
+location(alejka_napoje, 'Alejka z napojami', [pepsi, cola, red_bull, tiger, kong_strong]).
+location(palarnia_smietnik, 'Palarnia przy śmietniku', [proszek_do_prania_vizir, proszek_do_prania_persil, proszek_do_prania_perwoll, smieszne_ciasteczka, papierki]).
+
+% Wydział i jego pomieszczenia
 location(wydzial, 'Wydział', []).
+location(pietro_16, '16. piętro na wydziale', []).
+location(piwnica, 'Piwnica wydziału', []).
+location(piwnica_piwnicy, 'Piwnica piwnicy', []).
+location(sala_wykladowa, 'Sala wykładowa', []).
+location(korytarz_1_pietro, 'Korytarz na 1. piętrze', []).
+location(meski_kibel, 'Męski kibel', []).
+location(damski_kibel, 'Damski kibel - zamurowany, nie można wejść', []).
+
+% Specjalne miejsca na wydziale
+location(wietnam, 'Wietnam', []).
+location(laboratorium_komputerowe, 'Laboratorium komputerowe', []).
+location(laboratorium_sieciowe, 'Laboratorium sieciowe', []).
+
+% Domówka - kluczowe miejsca
+location(domowka, 'Dom Marka - Domówka', [szybkie_okularki]).
+
 
 /* Definicja połączeń między lokalizacjami */
 % connection(Z_lokalizacji, Do_lokalizacji, Kierunek)
+
+% Połączenia z Pokojem Marka
 connection(pokoj_marka, pokoj_babci, east).
 connection(pokoj_marka, dom_marka, south).
+
+% Połączenia w Domu Marka
 connection(dom_marka, pokoj_marka, north).
 connection(dom_marka, pokoj_babci, east).
 connection(dom_marka, targowek, west).
-connection(targowek, dom_marka, east).
 connection(dom_marka, makro, south).
-connection(makro, dom_marka, north).
 connection(dom_marka, wydzial, east).
+connection(dom_marka, epicka_lazienka, west).
+connection(dom_marka, parkiet, south).
+connection(dom_marka, drzwi_wejsciowe, north).
+
+% Połączenia na Targówku
+connection(targowek, dom_marka, east).
+connection(targowek, jorskiego, north).
+connection(targowek, radzyminska, south).
+connection(targowek, blokowa, west).
+connection(targowek, ogrodnicza, southeast).
+
+% Połączenia na Jórskiego
+connection(jorskiego, radzyminska, south).
+connection(jorskiego, blokowa, west).
+connection(jorskiego, targowek, east).
+
+% Połączenia na Radzymińskiej
+connection(radzyminska, jorskiego, north).
+connection(radzyminska, blokowa, west).
+connection(radzyminska, targowek, north).
+
+% Połączenia na Blokowej
+connection(blokowa, jorskiego, east).
+connection(blokowa, radzyminska, south).
+connection(blokowa, ogrodnicza, southwest).
+
+% Połączenia na Ogrodniczej
+connection(ogrodnicza, blokowa, northeast).
+connection(ogrodnicza, targowek, northwest).
+
+% Połączenia w Makro
+connection(makro, dom_marka, north).
+connection(makro, alejka_alkohol, east).
+connection(makro, alejka_jedzenie, west).
+connection(makro, alejka_napoje, south).
+connection(makro, palarnia_smietnik, southeast).
+
+% Połączenia w Alejkach Makro
+connection(alejka_alkohol, makro, west).
+connection(alejka_jedzenie, makro, east).
+connection(alejka_napoje, makro, north).
+connection(palarnia_smietnik, makro, northwest).
+
+% Połączenia w Wydziale
 connection(wydzial, dom_marka, west).
+connection(wydzial, pietro_16, north).
+connection(wydzial, piwnica, south).
+connection(wydzial, sala_wykladowa, east).
+connection(wydzial, korytarz_1_pietro, west).
+
+% Piwnica i pomieszczenia na wydziale
+connection(piwnica, wydzial, north).
+connection(piwnica, piwnica_piwnicy, down).
+connection(piwnica_piwnicy, piwnica, up).
+connection(piwnica_piwnicy, pietro_16, west).
+connection(piwnica_piwnicy, wietnam, east).
+
+connection(sala_wykladowa, korytarz_1_pietro, north).
+connection(sala_wykladowa, wydzial, west).
+
+connection(korytarz_1_pietro, wydzial, east).
+connection(korytarz_1_pietro, meski_kibel, west).
+connection(korytarz_1_pietro, damski_kibel, south).
+connection(korytarz_1_pietro, piwnica, south).
+
+connection(meski_kibel, korytarz_1_pietro, east).
+connection(laboratorium_sieciowe, meski_kibel, north).
+connection(laboratorium_komputerowe, piwnica, south).
+
+% Domówka - obszary w Domu Marka podczas imprezy
+connection(epicka_lazienka, dom_marka, east).
+connection(parkiet, dom_marka, north).
+connection(drzwi_wejsciowe, dom_marka, south).
+connection(drzwi_wejsciowe, domowka, entry).
+
+% Połączenia na 16 piętrze
+connection(pietro_16, piwnica_piwnicy, east).
+connection(pietro_16, wietnam, south).
+connection(pietro_16, wydzial, north).
+
 
 /* Definicja przedmiotów */
 % item(Nazwa, Kategoria, Opis, Właściwości, Cena)
@@ -68,6 +190,22 @@ move(Direction) :-
     retract(player_location(CurrentLocation)),
     assert(player_location(NextLocation)),
     describe_location(NextLocation).
+
+/* Funkcja wyświetlająca możliwe przejścia z aktualnej lokalizacji */
+display_possible_moves :-
+    player_location(CurrentLocation),
+    findall(Direction-NextLocation, connection(CurrentLocation, NextLocation, Direction), Moves),
+    (Moves = [] ->
+        write('Nie ma dostępnych przejść.'), nl;
+        write('Możliwe przejścia:'), nl,
+        print_moves(Moves)
+    ).
+
+print_moves([]).
+print_moves([Direction-NextLocation | Tail]) :-
+    write(Direction), write(' -> '), write(NextLocation), nl,
+    print_moves(Tail).
+
 
 move(_) :-
     write('Nie możesz tam przejść.'), nl.
