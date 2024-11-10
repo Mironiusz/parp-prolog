@@ -7,6 +7,7 @@
 :- dynamic(location/3).
 :- dynamic(connection/3).
 :- dynamic(guest/3).
+:- dynamic(game_state/1).
 
 % Początkowa lokalizacja gracza
 player_location(pokoj_marka).
@@ -16,6 +17,7 @@ player_inventory([]).
 
 % Początkowa ilość pieniędzy gracza
 player_money(0).
+game_state(0).
 /* Definicja lokalizacji */
 % location(Nazwa, Opis, Lista_przedmiotów)
 
@@ -72,94 +74,81 @@ location(domowka, 'Dom Marka - Domówka', [szybkie_okularki]).
 
 % Połączenia z Pokojem Marka
 connection(pokoj_marka, pokoj_babci, east).
-connection(pokoj_marka, dom_marka, south).
+connection(pokoj_marka, targowek, south).
+
+connection(pokoj_babci, pokoj_marka, west).
+
+% Połączenia na Targówku
+connection(targowek, blokowa, west).
+
+connection(jorskiego, radzyminska, south).
+connection(jorskiego, blokowa, west).
+
+connection(radzyminska, jorskiego, north).
+connection(radzyminska, blokowa, west).
+
+connection(blokowa, jorskiego, east).
+connection(blokowa, radzyminska, south).
+connection(blokowa, ogrodnicza, north).
+
+connection(ogrodnicza, blokowa, south).
+connection(ogrodnicza, makro, north). % Tutaj idziemy do Makro
+
+
+% Połączenia w Makro
+connection(makro, alejka_alkohol, east).
+connection(makro, alejka_jedzenie, west).
+connection(makro, alejka_napoje, south).
+connection(makro, palarnia_smietnik, north).
+
+connection(alejka_alkohol, alejka_napoje, west).
+connection(alejka_alkohol, alejka_jedzenie, east).
+connection(alejka_alkohol, palarnia_smietnik, south).
+connection(alejka_jedzenie, alejka_alkohol, west).
+connection(alejka_jedzenie, alejka_napoje, south).
+connection(alejka_jedzenie, palarnia_smietnik, north).
+connection(alejka_napoje, alejka_alkohol, north).
+connection(alejka_napoje, alejka_jedzenie, south).
+connection(alejka_napoje, palarnia_smietnik, west).
+connection(palarnia_smietnik, alejka_alkohol, nort).
+connection(palarnia_smietnik, alejka_jedzenie, west).
+connection(palarnia_smietnik, alejka_napoje, east).
+connection(palarnia_smietnik, wydzial, south). % Tutaj idziemy na wydział
+
+% Połączenia na Wydziale
+connection(wydzial, korytarz_1_pietro, west).
+
+connection(pietro_16, piwnica_piwnicy, north).
+connection(wietnam, piwnica_piwnicy, west).
+connection(sala_wykladowa, korytarz_1_pietro, south).
+connection(laboratorium_komputerowe, piwnica, west).
+
+connection(piwnica, piwnica_piwnicy, south).
+connection(piwnica, korytarz_1_pietro, north).
+connection(piwnica, laboratorium_komputerowe, east).
+
+connection(piwnica_piwnicy, piwnica, north).
+connection(piwnica_piwnicy, pietro_16, south).
+connection(piwnica_piwnicy, wietnam, east).
+connection(piwnica_piwnicy, damski_kibel, west).
+
+connection(laboratorium_sieciowe, meski_kibel, east).
+connection(meski_kibel, laboratorium_sieciowe, west).
+connection(meski_kibel, korytarz_1_pietro, north).
+
+connection(korytarz_1_pietro, meski_kibel, north).
+connection(korytarz_1_pietro, piwnica, west).
+connection(korytarz_1_pietro, sala_wykladowa, east).
+connection(korytarz_1_pietro, dom_marka, south). % Tutaj idziemy do domu Marka
 
 % Połączenia w Domu Marka
-connection(dom_marka, pokoj_marka, north).
-connection(dom_marka, pokoj_babci, east).
-connection(dom_marka, targowek, west).
-connection(dom_marka, makro, south).
-connection(dom_marka, wydzial, east).
 connection(dom_marka, epicka_lazienka, west).
 connection(dom_marka, parkiet, south).
 connection(dom_marka, drzwi_wejsciowe, north).
 
-% Połączenia na Targówku
-connection(targowek, dom_marka, east).
-connection(targowek, jorskiego, north).
-connection(targowek, radzyminska, south).
-connection(targowek, blokowa, west).
-connection(targowek, ogrodnicza, southeast).
-
-% Połączenia na Jórskiego
-connection(jorskiego, radzyminska, south).
-connection(jorskiego, blokowa, west).
-connection(jorskiego, targowek, east).
-
-% Połączenia na Radzymińskiej
-connection(radzyminska, jorskiego, north).
-connection(radzyminska, blokowa, west).
-connection(radzyminska, targowek, north).
-
-% Połączenia na Blokowej
-connection(blokowa, jorskiego, east).
-connection(blokowa, radzyminska, south).
-connection(blokowa, ogrodnicza, southwest).
-
-% Połączenia na Ogrodniczej
-connection(ogrodnicza, blokowa, northeast).
-connection(ogrodnicza, targowek, northwest).
-
-% Połączenia w Makro
-connection(makro, dom_marka, north).
-connection(makro, alejka_alkohol, east).
-connection(makro, alejka_jedzenie, west).
-connection(makro, alejka_napoje, south).
-connection(makro, palarnia_smietnik, southeast).
-
-% Połączenia w Alejkach Makro
-connection(alejka_alkohol, makro, west).
-connection(alejka_jedzenie, makro, east).
-connection(alejka_napoje, makro, north).
-connection(palarnia_smietnik, makro, northwest).
-
-% Połączenia w Wydziale
-connection(wydzial, dom_marka, west).
-connection(wydzial, pietro_16, north).
-connection(wydzial, piwnica, south).
-connection(wydzial, sala_wykladowa, east).
-connection(wydzial, korytarz_1_pietro, west).
-
-% Piwnica i pomieszczenia na wydziale
-connection(piwnica, wydzial, north).
-connection(piwnica, piwnica_piwnicy, down).
-connection(piwnica_piwnicy, piwnica, up).
-connection(piwnica_piwnicy, pietro_16, west).
-connection(piwnica_piwnicy, wietnam, east).
-
-connection(sala_wykladowa, korytarz_1_pietro, north).
-connection(sala_wykladowa, wydzial, west).
-
-connection(korytarz_1_pietro, wydzial, east).
-connection(korytarz_1_pietro, meski_kibel, west).
-connection(korytarz_1_pietro, damski_kibel, south).
-connection(korytarz_1_pietro, piwnica, south).
-
-connection(meski_kibel, korytarz_1_pietro, east).
-connection(laboratorium_sieciowe, meski_kibel, north).
-connection(laboratorium_komputerowe, piwnica, south).
-
-% Domówka - obszary w Domu Marka podczas imprezy
 connection(epicka_lazienka, dom_marka, east).
 connection(parkiet, dom_marka, north).
-connection(drzwi_wejsciowe, dom_marka, south).
-connection(drzwi_wejsciowe, domowka, entry).
-
-% Połączenia na 16 piętrze
-connection(pietro_16, piwnica_piwnicy, east).
-connection(pietro_16, wietnam, south).
-connection(pietro_16, wydzial, north).
-
+connection(parkiet, drzwi_wejsciowe, south).
 
 /* Definicja przedmiotów */
 % item(Nazwa, Kategoria, Opis, Właściwości, Cena)
