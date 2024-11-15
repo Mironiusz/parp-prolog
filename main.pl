@@ -189,6 +189,8 @@ npc(andrzej, drzwi_wejsciowe).
 description(pokoj_marka) :- write('Pokój Marka'), nl.
 description(pokoj_babci) :- write('Pokój babci'), nl.
 description(targowek) :- write('Targówke'), nl.
+description(blokowa) :- write('Blokowa'), nl.
+description(radzyminska) :- write('Radzyminska'), nl.
 
 description(giga_okularki) :- write('Giga okularki'), nl.
 description(koszulka_z_amppz) :- write('Koszulka z AMPPZ'), nl.
@@ -215,7 +217,8 @@ go_to_map(targowek) :-
     assert(game_state(1)).
 
 go_to_map(makro) :-
-    retract(player_location(ogrodnicza)),
+    player_location(CurrentLocation),
+    retract(player_location(CurrentLocation)),
     assert(player_location(alejka_alkohol)),
     retract(game_state(1)),
     assert(game_state(2)).
@@ -266,19 +269,29 @@ display_possible_moves(CurrentLocation) :-
         print_moves(Moves)
     ).
 
+display_items(CurrentLocation) :-
+    findall(Item, positioned_item(Item, CurrentLocation), Items),
+    (Items = [] ->
+        write('');
+        nl, write('Itemy:'), nl,
+        print_items(Items)
+    ).
+
 print_moves([]).
 print_moves([Direction-NextLocation | Tail]) :-
     write(Direction), write(' -> '), write(NextLocation), nl,
     print_moves(Tail).
 
+print_items([]).
+print_items([Item | Tail]) :-
+    description(Item),
+    print_items(Tail).
+
 describe_location(Location) :-
     location(Location),
-    write('Znajdujesz się w: '), write(Description), nl,
-    game_state(State), write(State), nl,
+    write('Znajdujesz się w: '), description(Location), nl,
     display_possible_moves(Location),
-    (Items \= [] ->
-        write('Widzisz tutaj: '), write(Items), nl;
-        true).
+    display_items(Location).
 
 /* Mechanika podnoszenia przedmiotów */
 pick(ItemName) :-
@@ -311,12 +324,12 @@ add_item(ItemName) :-
     retract(party_quality(CurrentQuality)),
     NewQuality is CurrentQuality + Quality,
     assert(party_quality(NewQuality)),
-    write('Wydałeś '), write(Amount), write(' zł.'), nl,
-    write('Zodstało Ci '), write(NewMoney), write(' zł.'), nl.
+    write('Wydałeś '), write(Price), write(' zł.'), nl,
+    write('Zostało Ci '), write(NewMoney), write(' zł.'), nl.
 
 % party item < 0
 add_item(ItemName) :-
-    party_item(ItemName, Price, Quality),
+    party_item(ItemName, Price, _),
     player_money(CurrentMoney),
     NewMoney is CurrentMoney - Price,
     NewMoney < 0,
@@ -363,7 +376,8 @@ talk_to(NPCName) :-
     player_location(Location),
     npc(NPCName, Location),
     retract(npc(NPCName, Location)),
-    invite(NPCName).
+    invite(NPCName),
+    dialog(NPCName, 3).
 
 talk_to(NPCName) :-
     player_location(Location),
@@ -389,11 +403,11 @@ init_fight :-
     player_inventory(Inventory),
     fight_loop(100, 100, Inventory).
 
-fight_loop(PlayerHP, EnemyHP, _) :-
+fight_loop(PlayerHP, _, _) :-
     PlayerHP =< 0,
     write('Przegrałeś walkę.'), nl.
 
-fight_loop(PlayerHP, EnemyHP, _) :-
+fight_loop(_, EnemyHP, _) :-
     EnemyHP =< 0,
     write('Wygrałeś walkę!'), nl.
 
@@ -425,14 +439,13 @@ enemy_attack(PlayerHP, NewPlayerHP) :-
 
 /* Mechanika zapraszania gości */
 invite(GuestName) :-
-    write('Zapraszasz '), write(GuestName), write(' na domówkę.'), nl,
     guest_list(Guests),
     retract(guest_list(Guests)),
-    assert(guest_list([Guest|GuestName])).
+    assert(guest_list([Guests|GuestName])).
 
 /* Uruchomienie gry */
 start :-
     write('Witaj w grze "Targówka na Domówku 2: Powrót Andżeja"!'), nl,
     write('Twoim celem jest zorganizowanie epickiej domówki.'), nl,
-    write('Możesz używać komend: move(Direction), pick(Item), talk_to(NPC), shop, fight, invite(Guest).'), nl,
+    write('Możesz używać komend: north, east, south, west, pick(Przedmiot), talk_to(Imię), fight'), nl,
     describe_location(pokoj_marka).
