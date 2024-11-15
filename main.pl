@@ -3,13 +3,12 @@
 :- dynamic(player_inventory/1).
 :- dynamic(party_inventory/1).
 :- dynamic(player_money/1).
-
-:- dynamic(npc/4).
-:- dynamic(location/3).
-:- dynamic(connection/3).
-:- dynamic(guest/3).
-:- dynamic(guests/1).
+:- dynamic(guest_list/1).
 :- dynamic(game_state/1).
+:- dynamic(party_quality/1).
+
+:- dynamic(npc/2).
+:- dynamic(positioned_item/2).
 
 % Początkowa lokalizacja gracza
 player_location(pokoj_marka).
@@ -17,19 +16,20 @@ player_location(pokoj_marka).
 % Początkowy stan inwentarza gracza
 player_inventory([]).
 party_inventory([]).
-
-guests([]).
+guest_list([]).
 
 % Początkowa ilość pieniędzy gracza
 player_money(0).
 game_state(0).
+party_quality(0).
 /* Definicja lokalizacji */
 % map(Nazwa)
 
-map(dom_marka).
+map(pokoj_babci).
 map(targowek).
 map(makro).
 map(wydzial).
+map(domowka).
 
 % location(Nazwa, Opis, Lista_przedmiotów)
 % location(Nazwa).
@@ -38,48 +38,42 @@ map(wydzial).
 location(pokoj_marka).
 
 % Pokój Babci
-location(pokoj_babci, [skarpetka, lupa, stare_zdjecie]).
-
-% Dom Marka - główne miejsce domówki
-location(dom_marka, 'Dom Marka', [mega_sejf, mapa_targowka]).
-
-% Dom Marka - szczegóły podczas domówki
-location(epicka_lazienka, 'Epicka Łazienka', [siatka_pelna_niespodzianek]).
-location(parkiet, 'Parkiet na domówce', []).
-location(drzwi_wejsciowe, 'Drzwi wejściowe', []).
+location(pokoj_babci).
 
 % Targówek i okoliczne ulice
-location(targowek, 'Targówek', []).
-location(jorskiego, 'Ulica Jórskiego', [szlugi, pusta_puszka_kuflowe_mocne, metalowy_pret, cegla]).
-location(radzyminska, 'Ulica Radzymińska', [klucz_francuski, kastet, kebab, smieci]).
-location(blokowa, 'Ulica Blokowa', [baseball, tulipan_po_krolewskim, piwo, doritosy]).
-location(ogrodnicza, 'Ulica Ogrodnicza', [energol, strzykawka, gazeta, malpka_z_zabki]).
-location(spot_sprzedazy_proszku, 'Spot do sprzedaży proszku', [proszek_do_prania_vizir]).
+location(targowek).
+location(jorskiego).
+location(radzyminska).
+location(blokowa).
+location(ogrodnicza).
 
 % Sklep Makro i jego alejki
-location(makro, 'Makro - Główne Wejście', []).
-location(alejka_alkohol, 'Alejka z alkoholem', [zubrowka, duch_puszczy, jager, harnas, komandos, orzechowka, smerf]).
-location(alejka_jedzenie, 'Alejka z jedzeniem', [pizza_pepperoni, pizza_hawajska, laysy_solone, laysy_paprykowe, doritosy_serowe, cheetosy_ketchup]).
-location(alejka_napoje, 'Alejka z napojami', [pepsi, cola, red_bull, tiger, kong_strong]).
-location(palarnia_smietnik, 'Palarnia przy śmietniku', [proszek_do_prania_vizir, proszek_do_prania_persil, proszek_do_prania_perwoll, smieszne_ciasteczka, papierki]).
+location(makro).
+location(alejka_alkohol).
+location(alejka_jedzenie).
+location(alejka_napoje).
+location(palarnia_smietnik).
 
 % Wydział i jego pomieszczenia
-location(wydzial, 'Wydział', []).
-location(pietro_16, '16. piętro na wydziale', []).
-location(piwnica, 'Piwnica wydziału', []).
-location(piwnica_piwnicy, 'Piwnica piwnicy', []).
-location(sala_wykladowa, 'Sala wykładowa', []).
-location(korytarz_1_pietro, 'Korytarz na 1. piętrze', []).
-location(meski_kibel, 'Męski kibel', []).
-location(damski_kibel, 'Damski kibel - zamurowany, nie można wejść', []).
+location(wydzial).
+location(pietro_16).
+location(piwnica).
+location(piwnica_piwnicy).
+location(sala_wykladowa).
+location(korytarz_1_pietro).
+location(meski_kibel).
+location(damski_kibel).
 
 % Specjalne miejsca na wydziale
-location(wietnam, 'Wietnam', []).
-location(laboratorium_komputerowe, 'Laboratorium komputerowe', []).
-location(laboratorium_sieciowe, 'Laboratorium sieciowe', []).
+location(wietnam).
+location(laboratorium_komputerowe).
+location(laboratorium_sieciowe).
 
 % Domówka - kluczowe miejsca
-location(domowka, 'Dom Marka - Domówka', [szybkie_okularki]).
+location(domowka).
+location(epicka_lazienka).
+location(parkiet).
+location(drzwi_wejsciowe).
 
 
 /* Definicja połączeń między lokalizacjami */
@@ -89,11 +83,9 @@ location(domowka, 'Dom Marka - Domówka', [szybkie_okularki]).
 connection(pokoj_marka, pokoj_babci, east).
 connection(pokoj_marka, targowek, south).
 
-connection(pokoj_babci, pokoj_marka, west).
+connection(pokoj_babci, makro, south).
 
 % Połączenia na Targówku
-connection(targowek, blokowa, west).
-
 connection(jorskiego, radzyminska, south).
 connection(jorskiego, blokowa, west).
 
@@ -129,8 +121,6 @@ connection(palarnia_smietnik, alejka_napoje, east).
 connection(palarnia_smietnik, wydzial, south). % Tutaj idziemy na wydział
 
 % Połączenia na Wydziale
-connection(wydzial, korytarz_1_pietro, west).
-
 connection(pietro_16, piwnica_piwnicy, north).
 connection(wietnam, piwnica_piwnicy, west).
 connection(sala_wykladowa, korytarz_1_pietro, south).
@@ -152,25 +142,20 @@ connection(meski_kibel, korytarz_1_pietro, north).
 connection(korytarz_1_pietro, meski_kibel, north).
 connection(korytarz_1_pietro, piwnica, west).
 connection(korytarz_1_pietro, sala_wykladowa, east).
-connection(korytarz_1_pietro, dom_marka, south). % Tutaj idziemy do domu Marka
+connection(korytarz_1_pietro, domowka, south). % Tutaj idziemy do domu Marka
 
 % Połączenia w Domu Marka
-connection(dom_marka, epicka_lazienka, west).
-connection(dom_marka, parkiet, south).
-connection(dom_marka, drzwi_wejsciowe, north).
-
-connection(epicka_lazienka, dom_marka, east).
-connection(parkiet, dom_marka, north).
+connection(epicka_lazienka, parkiet, east).
+connection(parkiet, epicka_lazienka, north).
 connection(parkiet, drzwi_wejsciowe, south).
 
 
 /* Definicja przedmiotów */
 % positioned_item(Nazwa, Location).
 % pokoj marka
-positioned_item(oszczednosci, pokoj_marka).
+positioned_item(szczeka, pokoj_babci).
 positioned_item(giga_okularki, pokoj_marka).
 positioned_item(koszulka_z_amppz, pokoj_marka).
-item(koszulka_z_amppz, przedmiot_specjalny, 'Koszulka z AMPPZ', [def(2)], 0).
 
 % pokoj babci
 
@@ -183,9 +168,10 @@ positioned_item(red_bull, alejka_napoje).
 
 % fight_item(name, healing_effect, damage_effect).
 fight_item(giga_okularki, 0, 5).
+fight_item(koszulka_z_amppz, 0, 100).
 
 % money_item(name, price).
-money_item(oszczednosci, 100).
+money_item(szczeka, 100).
 
 
 % party_item(name, price, quality).
@@ -194,22 +180,11 @@ party_item(pizza_pepperoni, 15, 7).
 party_item(red_bull, 5, 3).
 
 /* Definicja postaci NPC */
-% npc(Nazwa, Lokalizacja, Dialogi, Przedmioty_do_otrzymania)
+% npc(Nazwa, Localization).
 npc(babcia, pokoj_babci).
 npc(andrzej, drzwi_wejsciowe).
 
-/* dialog(NPC, location, Dialog). */
-
-/* Definicja gości */
-% guest(Nazwa, Oczekiwany_przedmiot, Poziom_zadowolenia)
-guest(rafal, komandos, 0).
-guest(kubus, jager, 0).
-guest(macius, red_bull, 0).
-
-
-/* guest(NPC, weak, strong). */
-
-/* prezent(name, healing_effect, damage_effect). */
+% prezent(name, healing_effect, damage_effect). */
 
 
 
@@ -220,7 +195,6 @@ description(pokoj_marka) :- write('Pokój Marka'), nl.
 description(pokoj_babci) :- write('Pokój babci'), nl.
 description(targowek) :- write('Targówke'), nl.
 
-description(oszczednosci) :- write('Oszczędności'), nl.
 description(giga_okularki) :- write('Giga okularki'), nl.
 description(koszulka_z_amppz) :- write('Koszulka z AMPPZ'), nl.
 description(zubrowka) :- write('Żubrówka'), nl.
@@ -228,10 +202,40 @@ description(pizza_pepperoni) :- write('Pizza Pepperoni'), nl.
 description(red_bull) :- write('Red Bull'), nl.
 
 % dialog(name, game_state) :- write(), (...).
+dialog(andrzej, 4) :- 
+    write('Chuju jebany'), nl.
 
 /* Mechanika poruszania się */
 % go_to_map(map_name) :- all thing to move beetwen maps
-go_to_map(Map). % TODO: fill with existing maps
+go_to_map(pokoj_babci) :-
+    retract(player_location(pokoj_marka)),
+    assert(player_location(pokoj_babci)),
+    retract(game_state(0)),
+    assert(game_state(1)).
+
+go_to_map(targowek) :-
+    retract(player_location(pokoj_marka)),
+    assert(player_location(blokowa)),
+    retract(game_state(0)),
+    assert(game_state(1)).
+
+go_to_map(makro) :-
+    retract(player_location(ogrodnicza)),
+    assert(player_location(alejka_alkohol)),
+    retract(game_state(1)),
+    assert(game_state(2)).
+
+go_to_map(wydzial) :-
+    retract(player_location(palarnia_smietnik)),
+    assert(player_location(korytarz_1_pietro)),
+    retract(game_state(2)),
+    assert(game_state(3)).
+
+go_to_map(domowka) :-
+    retract(player_location(korytarz_1_pietro)),
+    assert(player_location(parkiet)),
+    retract(game_state(3)),
+    assert(game_state(4)).
 
 % move beetwen maps
 move(Direction) :-
@@ -273,7 +277,7 @@ print_moves([Direction-NextLocation | Tail]) :-
     print_moves(Tail).
 
 describe_location(Location) :-
-    location(Location, Description, Items),
+    location(Location),
     write('Znajdujesz się w: '), write(Description), nl,
     game_state(State), write(State), nl,
     display_possible_moves(Location),
@@ -308,6 +312,10 @@ add_item(ItemName) :-
     party_inventory(Items),
     retract(party_inventory(Items)),
     assert(party_inventory([ItemName|Items])),
+    party_quality(CurrentQuality),
+    retract(party_quality(CurrentQuality)),
+    NewQuality is CurrentQuality + Quality,
+    assert(party_quality(NewQuality)),
     write('Wydałeś '), write(Amount), write(' zł.'), nl,
     write('Zodstało Ci '), write(NewMoney), write(' zł.'), nl.
 
@@ -339,18 +347,38 @@ add_money(Amount) :-
     assert(player_money(NewMoney)),
     write('Otrzymałeś '), write(Amount), write(' zł.'), nl.
 
+remove_money(Amount) :- 
+    player_money(CurrentMoney),
+    NewMoney is CurrentMoney - Amount,
+    NewMoney < 0,
+    NewMoney is 0,
+    retract(player_money(CurrentMoney)),
+    assert(player_money(NewMoney)).
+
+remove_money(Amount) :- 
+    player_money(CurrentMoney),
+    NewMoney is CurrentMoney - Amount,
+    NewMoney >= 0,
+    retract(player_money(CurrentMoney)),
+    assert(player_money(NewMoney)).
+
 /* Mechanika rozmowy z NPC */
 talk_to(NPCName) :-
+    game_state(3),
     player_location(Location),
-    npc(NPCName, Location, Dialogues, Rewards).
+    npc(NPCName, Location),
+    retract(npc(NPCName, Location)),
+    invite(NPCName).
+
+talk_to(NPCName) :-
+    player_location(Location),
+    npc(NPCName, Location),
+    game_state(State),
+    retract(npc(NPCName, Location)),
+    dialog(NPCName, State).
 
 talk_to(_) :-
     write('Nie ma tu takiej osoby.'), nl.
-
-print_dialogues([]).
-print_dialogues([H|T]) :-
-    write('"'), write(H), write('"'), nl,
-    print_dialogues(T).
 
 /* Mechanika walki */
 fight :-
@@ -392,7 +420,7 @@ use_item(ItemName, Damage, Heal) :-
     fight_item(ItemName, Heal, Damage),
     write('Użyłeś '), write(ItemName), nl.
 
-use_item(_, 0, 0) :-
+use_item(_, _, _) :-
     write('Nie możesz użyć tego przedmiotu.'), nl.
 
 enemy_attack(PlayerHP, NewPlayerHP) :-
@@ -402,22 +430,10 @@ enemy_attack(PlayerHP, NewPlayerHP) :-
 
 /* Mechanika zapraszania gości */
 invite(GuestName) :-
-    player_location(wydzial),
-    guest(GuestName, ExpectedItem, _),
     write('Zapraszasz '), write(GuestName), write(' na domówkę.'), nl,
-    check_expectations(GuestName, ExpectedItem).
-
-invite(_) :-
-    write('Nie ma takiej osoby do zaproszenia.'), nl.
-
-check_expectations(GuestName, ExpectedItem) :-
-    player_inventory(Inventory),
-    (member(ExpectedItem, Inventory) ->
-        Satisfaction = 2;
-        Satisfaction = 1),
-    retract(guest(GuestName, ExpectedItem, _)),
-    assert(guest(GuestName, ExpectedItem, Satisfaction)),
-    write(GuestName), write(' będzie na imprezie.'), nl.
+    guest_list(Guests),
+    retract(guest_list(Guests)),
+    assert(guest_list([Guest|GuestName])).
 
 /* Uruchomienie gry */
 start :-
