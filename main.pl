@@ -184,7 +184,7 @@ party_item(red_bull, 5, 3).
 npc(babcia, pokoj_babci).
 npc(andrzej, drzwi_wejsciowe).
 
-% prezent(name, healing_effect, damage_effect). */
+% prezent(name, weak, strong).
 
 
 
