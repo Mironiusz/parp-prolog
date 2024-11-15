@@ -1,12 +1,14 @@
 % Definicja dynamicznych predykatów, które będą modyfikowane w trakcie gry
 :- dynamic(player_location/1).
 :- dynamic(player_inventory/1).
+:- dynamic(party_inventory/1).
 :- dynamic(player_money/1).
+
 :- dynamic(npc/4).
-:- dynamic(item/5).
 :- dynamic(location/3).
 :- dynamic(connection/3).
 :- dynamic(guest/3).
+:- dynamic(guests/1).
 :- dynamic(game_state/1).
 
 % Początkowa lokalizacja gracza
@@ -14,18 +16,29 @@ player_location(pokoj_marka).
 
 % Początkowy stan inwentarza gracza
 player_inventory([]).
+party_inventory([]).
+
+guests([]).
 
 % Początkowa ilość pieniędzy gracza
 player_money(0).
 game_state(0).
 /* Definicja lokalizacji */
+% map(Nazwa)
+
+map(dom_marka).
+map(targowek).
+map(makro).
+map(wydzial).
+
 % location(Nazwa, Opis, Lista_przedmiotów)
+% location(Nazwa).
 
 % Lokacja startowa: Pokój Marka
-location(pokoj_marka, 'Pokój Marka', [oszczednosci, giga_okularki, koszulka_z_amppz]).
+location(pokoj_marka).
 
 % Pokój Babci
-location(pokoj_babci, 'Pokój Babci', [skarpetka, lupa, stare_zdjecie]).
+location(pokoj_babci, [skarpetka, lupa, stare_zdjecie]).
 
 % Dom Marka - główne miejsce domówki
 location(dom_marka, 'Dom Marka', [mega_sejf, mapa_targowka]).
@@ -150,21 +163,42 @@ connection(epicka_lazienka, dom_marka, east).
 connection(parkiet, dom_marka, north).
 connection(parkiet, drzwi_wejsciowe, south).
 
+
 /* Definicja przedmiotów */
-% item(Nazwa, Kategoria, Opis, Właściwości, Cena)
-item(oszczednosci, pieniadze, 'Twoje oszczędności', [wartosc(100)], 0).
-item(giga_okularki, przedmiot_specjalny, 'Giga okularki', [dmg(5)], 0).
+% positioned_item(Nazwa, Location).
+% pokoj marka
+positioned_item(oszczednosci, pokoj_marka).
+positioned_item(giga_okularki, pokoj_marka).
+positioned_item(koszulka_z_amppz, pokoj_marka).
 item(koszulka_z_amppz, przedmiot_specjalny, 'Koszulka z AMPPZ', [def(2)], 0).
 
-% Przykładowe przedmioty z Makro
-item(zubrowka, alkohol, 'Żubrówka', [zadowolenie(5)], 20).
-item(pizza_pepperoni, jedzenie, 'Pizza Pepperoni', [zadowolenie(7)], 15).
-item(red_bull, napoj, 'Red Bull', [zadowolenie(3)], 5).
+% pokoj babci
+
+% targowek
+
+% macro
+positioned_item(zubrowka, alejka_alkohol).
+positioned_item(pizza_pepperoni, alejka_jedzenie).
+positioned_item(red_bull, alejka_napoje).
+
+% fight_item(name, healing_effect, damage_effect).
+fight_item(giga_okularki, 0, 5).
+
+% money_item(name, price).
+money_item(oszczednosci, 100).
+
+
+% party_item(name, price, quality).
+party_item(zubrowka, 20, 5).
+party_item(pizza_pepperoni, 15, 7).
+party_item(red_bull, 5, 3).
 
 /* Definicja postaci NPC */
 % npc(Nazwa, Lokalizacja, Dialogi, Przedmioty_do_otrzymania)
-npc(babcia, pokoj_babci, ['Co tam, wnuczku?'], [pieniadze(50)]).
-npc(andrzej, drzwi_wejsciowe, ['Nie zaprosiłeś mnie na imprezę?'], []).
+npc(babcia, pokoj_babci).
+npc(andrzej, drzwi_wejsciowe).
+
+/* dialog(NPC, location, Dialog). */
 
 /* Definicja gości */
 % guest(Nazwa, Oczekiwany_przedmiot, Poziom_zadowolenia)
@@ -172,7 +206,43 @@ guest(rafal, komandos, 0).
 guest(kubus, jager, 0).
 guest(macius, red_bull, 0).
 
+
+/* guest(NPC, weak, strong). */
+
+/* prezent(name, healing_effect, damage_effect). */
+
+
+
+/* descriptions and dialogs */
+
+% description(name) :- write(), (...).
+description(pokoj_marka) :- write('Pokój Marka'), nl.
+description(pokoj_babci) :- write('Pokój babci'), nl.
+description(targowek) :- write('Targówke'), nl.
+
+description(oszczednosci) :- write('Oszczędności'), nl.
+description(giga_okularki) :- write('Giga okularki'), nl.
+description(koszulka_z_amppz) :- write('Koszulka z AMPPZ'), nl.
+description(zubrowka) :- write('Żubrówka'), nl.
+description(pizza_pepperoni) :- write('Pizza Pepperoni'), nl.
+description(red_bull) :- write('Red Bull'), nl.
+
+% dialog(name, game_state) :- write(), (...).
+
 /* Mechanika poruszania się */
+% go_to_map(map_name) :- all thing to move beetwen maps
+go_to_map(Map). % TODO: fill with existing maps
+
+% move beetwen maps
+move(Direction) :-
+    player_location(CurrentLocation),
+    connection(CurrentLocation, NextLocation, Direction),
+    map(NextLocation),
+    go_to_map(NextLocation),
+    player_location(Location),
+    describe_location(Location).
+
+% just normal places
 move(Direction) :-
     player_location(CurrentLocation),
     connection(CurrentLocation, NextLocation, Direction),
@@ -180,9 +250,16 @@ move(Direction) :-
     assert(player_location(NextLocation)),
     describe_location(NextLocation).
 
+move(_) :-
+    write('Nie możesz tam przejść.'), nl.
+
+north :- move(north).
+east :- move(east).
+south :- move(south).
+west :- move(west).
+
 /* Funkcja wyświetlająca możliwe przejścia z aktualnej lokalizacji */
-display_possible_moves :-
-    player_location(CurrentLocation),
+display_possible_moves(CurrentLocation) :-
     findall(Direction-NextLocation, connection(CurrentLocation, NextLocation, Direction), Moves),
     (Moves = [] ->
         write('Nie ma dostępnych przejść.'), nl;
@@ -195,13 +272,11 @@ print_moves([Direction-NextLocation | Tail]) :-
     write(Direction), write(' -> '), write(NextLocation), nl,
     print_moves(Tail).
 
-
-move(_) :-
-    write('Nie możesz tam przejść.'), nl.
-
 describe_location(Location) :-
     location(Location, Description, Items),
     write('Znajdujesz się w: '), write(Description), nl,
+    game_state(State), write(State), nl,
+    display_possible_moves(Location),
     (Items \= [] ->
         write('Widzisz tutaj: '), write(Items), nl;
         true).
@@ -209,26 +284,65 @@ describe_location(Location) :-
 /* Mechanika podnoszenia przedmiotów */
 pick(ItemName) :-
     player_location(Location),
-    location(Location, _, Items),
-    member(ItemName, Items),
-    retract(location(Location, Desc, Items)),
-    delete(Items, ItemName, NewItems),
-    assert(location(Location, Desc, NewItems)),
+    positioned_item(ItemName, Location),
+    add_item(ItemName),
+    retract(positioned_item(ItemName, Location)).
+
+% not defined
+pick(_) :-
+    write('Nie ma tu takiego przedmiotu.'), nl.
+
+% money item
+add_item(ItemName) :-
+    money_item(ItemName, Price),
+    add_money(Price).
+
+% party item >= 0
+add_item(ItemName) :-
+    party_item(ItemName, Price, Quality),
+    player_money(CurrentMoney),
+    NewMoney is CurrentMoney - Price,
+    NewMoney >= 0,
+    retract(player_money(CurrentMoney)),
+    assert(player_money(NewMoney)),
+    party_inventory(Items),
+    retract(party_inventory(Items)),
+    assert(party_inventory([ItemName|Items])),
+    write('Wydałeś '), write(Amount), write(' zł.'), nl,
+    write('Zodstało Ci '), write(NewMoney), write(' zł.'), nl.
+
+% party item < 0
+add_item(ItemName) :-
+    party_item(ItemName, Price, Quality),
+    player_money(CurrentMoney),
+    NewMoney is CurrentMoney - Price,
+    NewMoney < 0,
+    write('Przedmiot jest za drogi'), nl,
+    write('Zodstało Ci '), write(NewMoney), write(' zł.'), nl.
+
+% fight item
+add_item(ItemName) :-
+    fight_item(ItemName, _, __),
     player_inventory(Inventory),
     retract(player_inventory(Inventory)),
     assert(player_inventory([ItemName|Inventory])),
-    write('Podniosłeś: '), write(ItemName), nl.
+    write('Dodano przedmiot '), write(description(ItemName)), nl.
 
-pick(_) :-
-    write('Nie ma tu takiego przedmiotu.'), nl.
+% not defined
+add_item(_) :-
+    write('Error').
+
+add_money(Amount) :- 
+    player_money(CurrentMoney),
+    NewMoney is CurrentMoney + Amount,
+    retract(player_money(CurrentMoney)),
+    assert(player_money(NewMoney)),
+    write('Otrzymałeś '), write(Amount), write(' zł.'), nl.
 
 /* Mechanika rozmowy z NPC */
 talk_to(NPCName) :-
     player_location(Location),
-    npc(NPCName, Location, Dialogues, Rewards),
-    write(NPCName), write(' mówi: '), nl,
-    print_dialogues(Dialogues),
-    give_rewards(Rewards).
+    npc(NPCName, Location, Dialogues, Rewards).
 
 talk_to(_) :-
     write('Nie ma tu takiej osoby.'), nl.
@@ -238,58 +352,10 @@ print_dialogues([H|T]) :-
     write('"'), write(H), write('"'), nl,
     print_dialogues(T).
 
-give_rewards([]).
-give_rewards([pieniadze(Amount)|T]) :-
-    player_money(Money),
-    NewMoney is Money + Amount,
-    retract(player_money(Money)),
-    assert(player_money(NewMoney)),
-    write('Otrzymałeś '), write(Amount), write(' zł.'), nl,
-    give_rewards(T).
-
-/* Mechanika zakupów w Makro */
-shop :-
-    player_location(makro),
-    write('Witaj w Makro! Co chcesz kupić?'), nl,
-    list_items_for_sale,
-    read(ItemName),
-    attempt_purchase(ItemName).
-
-shop :-
-    write('Nie jesteś w Makro.'), nl.
-
-list_items_for_sale :-
-    item(Name, _, Description, _, Price),
-    Price > 0,
-    write(Name), write(' - '), write(Description), write(' - '), write(Price), write(' zł'), nl,
-    fail.
-list_items_for_sale.
-
-attempt_purchase(ItemName) :-
-    item(ItemName, _, _, _, Price),
-    player_money(Money),
-    Money >= Price,
-    NewMoney is Money - Price,
-    retract(player_money(Money)),
-    assert(player_money(NewMoney)),
-    player_inventory(Inventory),
-    retract(player_inventory(Inventory)),
-    assert(player_inventory([ItemName|Inventory])),
-    write('Kupiłeś: '), write(ItemName), nl.
-
-attempt_purchase(ItemName) :-
-    item(ItemName, _, _, _, Price),
-    player_money(Money),
-    Money < Price,
-    write('Nie masz wystarczająco pieniędzy.'), nl.
-
-attempt_purchase(_) :-
-    write('Nie ma takiego przedmiotu w sprzedaży.'), nl.
-
 /* Mechanika walki */
 fight :-
     player_location(drzwi_wejsciowe),
-    npc(andrzej, drzwi_wejsciowe, _, _),
+    npc(andrzej, drzwi_wejsciowe),
     write('Rozpoczynasz walkę z Andżejem!'), nl,
     init_fight.
 
@@ -323,17 +389,11 @@ fight_loop(PlayerHP, EnemyHP, Inventory) :-
 use_item(ItemName, Damage, Heal) :-
     player_inventory(Inventory),
     member(ItemName, Inventory),
-    item(ItemName, _, _, Properties, _),
-    get_property(Properties, dmg(Damage)),
-    get_property(Properties, heal(Heal)),
+    fight_item(ItemName, Heal, Damage),
     write('Użyłeś '), write(ItemName), nl.
 
 use_item(_, 0, 0) :-
     write('Nie możesz użyć tego przedmiotu.'), nl.
-
-get_property([Prop|_], Prop).
-get_property([_|T], Prop) :-
-    get_property(T, Prop).
 
 enemy_attack(PlayerHP, NewPlayerHP) :-
     Damage is 10,
