@@ -101,11 +101,6 @@ connection(ogrodnicza, makro, north). % Tutaj idziemy do Makro
 
 
 % Połączenia w Makro
-connection(makro, alejka_alkohol, east).
-connection(makro, alejka_jedzenie, west).
-connection(makro, alejka_napoje, south).
-connection(makro, palarnia_smietnik, north).
-
 connection(alejka_alkohol, alejka_napoje, west).
 connection(alejka_alkohol, alejka_jedzenie, east).
 connection(alejka_alkohol, palarnia_smietnik, south).
