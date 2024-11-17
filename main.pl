@@ -320,26 +320,26 @@ party_item(kosmiczny_papierek, 20, 40).
 npc(babcia, pokoj_babci).
 
     % cpuny kibole
-npc(krzemarz, jorskiego). 
-npc(jacus, jorskiego). 
-npc(sobix, jorskiego). 
-npc(traba, jorskiego). 
+npc(krzemarz, jorskiego).
+npc(jacus, jorskiego).
+npc(sobix, jorskiego).
+npc(traba, jorskiego).
 npc(krolik, jorskiego).
-npc(strozyk, jorskiego). 
-npc(witus, jorskiego). 
-npc(kozuch, radzyminska). 
-npc(swieczka, radzyminska). 
-npc(krol_julian, radzyminska). 
-npc(sliwka, radzyminska). 
-npc(duzy_eryk, radzyminska). 
-npc(bialy_crook, blokowa). 
-npc(chudy, blokowa). 
-npc(jeziorak, blokowa). 
-npc(niespodzianka, blokowa). 
-npc(charkacz, ogrodnicza). 
-npc(mariusz, ogrodnicza). 
-npc(grabie, ogrodnicza). 
-npc(gracjan, ogrodnicza). 
+npc(strozyk, jorskiego).
+npc(witus, jorskiego).
+npc(kozuch, radzyminska).
+npc(swieczka, radzyminska).
+npc(krol_julian, radzyminska).
+npc(sliwka, radzyminska).
+npc(duzy_eryk, radzyminska).
+npc(bialy_crook, blokowa).
+npc(chudy, blokowa).
+npc(jeziorak, blokowa).
+npc(niespodzianka, blokowa).
+npc(charkacz, ogrodnicza).
+npc(mariusz, ogrodnicza).
+npc(grabie, ogrodnicza).
+npc(gracjan, ogrodnicza).
 
     % studenci
 npc(karol_wietnam, wietnam).
@@ -439,12 +439,12 @@ name(swieczka, 'Świeczka').
 name(sliwka, 'Śliwka').
 name(krol_julian, 'Król Julian').
 name(duzy_eryk, 'Duży Eryk').
-name(niespodzianka, 'Niespodzianka'). 
-name(bialy_crook, 'Biały Crook'). 
+name(niespodzianka, 'Niespodzianka').
+name(bialy_crook, 'Biały Crook').
 name(chudy, 'Chudy').
-name(charkacz, 'Charkacz'). 
+name(charkacz, 'Charkacz').
 name(jeziorak, 'Jeziorak').
-name(mariusz, 'Mariusz'). 
+name(mariusz, 'Mariusz').
 name(grabie, 'Grabie').
 name(gracjan, 'Gracjan').
 
@@ -454,16 +454,16 @@ name(adrian, 'Adrian').
 name(karol_wietnam, 'Karol z Wietnamu').
 name(martynka, 'Martynka').
 name(kopytek, 'Kopytek').
-name(piotrek, 'Piotrek'). 
+name(piotrek, 'Piotrek').
 name(bartek, 'Bartek').
-name(jureczek, 'Jureczek'). 
+name(jureczek, 'Jureczek').
 name(tomek, 'Tomek').
 name(wojtek, 'Wojtek').
-name(macius, 'Maciuś'). 
+name(macius, 'Maciuś').
 name(olek, 'Olek').
-name(kubus, 'Kubuś (Frontend)'). 
+name(kubus, 'Kubuś (Frontend)').
 name(rafalek, 'Rafałek').
-name(lukasz_2, 'Łukasz 2'). 
+name(lukasz_2, 'Łukasz 2').
 name(krzysiu, 'Krzysiu').
 name(mikolaj, 'Mikołaj').
 name(jasiulek, 'Jasiulek').
@@ -576,49 +576,51 @@ name(szybkie_okularki, 'Szybkie okularki').
 
 % dialog(name, game_state) :- write(), (...).
     % cpuny i kibole
-dialog(krzemarz, 1) :- 
+dialog(krzemarz, 1) :-
     write('Marek: Siema Krzemarz! Dawno cię nie widziałem. Chyba ten system cię oszukał?'), nl,
     write('Krzemarz: Siema Marek! Słuchaj, tak dawno nie prałem moich ubrań proszkiem Perwoll, że już chyba nie wytrzymam. Masz może trochę?'), nl,
     write('Marek: Jasne, żaden problem. 10 złotych i jest twój.'), nl,
     write('Krzemarz: 10 złotych??? Drogo. No ale dobra, biorę. Trzymaj.'), nl,
     add_money(10).
 
-dialog(jacus, 1) :- 
+dialog(jacus, 1) :-
     write('Marek: Cześć Jacuś! Nie masz może ochoty na jakiegoś ptysia?'), nl,
     write('Jacuś: Ty to jednak mnie znasz! Słuchaj, ptysie to tylko w zimie, teraz potrzebny mi proszek Vizir. Mam 15 złotych, uda się coś załatwić?'), nl,
     write('Marek: Spokojnie, damy radę. Trzymaj.'), nl,
     add_money(15).
 
-dialog(sobix, 1) :- 
+dialog(sobix, 1) :-
     write('Marek: Sobix! Jak tam twoja sieć kontaktów? Znasz może kogoś, kto potrzebuje jakiegoś proszku?'), nl,
     write('Sobix: Oj tak. Znam, i jestem to ja. Daj mi trochę, zrobię wszystko, żeby wyprać moją koszulę.'), nl,
     write('Marek: Oczywiście, mogę ci trochę odpalić za 5 złotych. Pasuje ci?'), nl,
     write('Sobix: To wszystko co mam, ale chyba warto. Trzymaj.'), nl,
     add_money(5).
 
-dialog(traba, 1) :- 
+dialog(traba, 1) :-
     write('Marek: O, Trąba. Ty to pewnie będziesz chciał jakiś konkret?'), nl,
     write('Trąba: A żebyś wiedział. Mam 20 złotych, chcę ten co zwykle, o zapachu lawendy.'), nl,
     write('Marek: Żaden problem, jest twój.'), nl,
     add_money(20).
 
-dialog(krolik, 1) :- 
+dialog(krolik, 1) :-
     write('Marek: Cześć Królik! Nie brakuje ci ostatnio proszku?'), nl,
     write('Królik: Brakuje, brakuje. Bez proszku czuję się jak bez ręki. Masz trochę? Za jakieś 15 złotych?'), nl,
     write('Marek: Oczywiście, że mam. Trzymaj.'), nl,
     add_money(15).
 
-dialog(strozyk, 1) :- 
+dialog(strozyk, 1) :-
     write('Stróżyk: Tak naprawdę mogliby Państwo nic ode mnie nie dostać, to nie jest szkoła gdzie pani pisze coś na tablicy a Pan się uczy z zeszytu, wskazuję tematy które będą obowiązywać, jeśli ktoś nawet nie wie jak się oznacza najprostsze rzeczy, to nie moja sprawa, taka osoba ma obowiązek sama opanować ten materiał, to nie jest obowiązkowe a ja nie mam obowiązku niczego udostępniać, więc dobrze by było gdyby Pan pohamował swoje roszczenia, od zawsze było tak że końcowa część materiału nie jest omawiana, ten materiał obowiązuje bo to ma wymagać zaangażowania od Państwa, wszystko już zostało omówione, zestawy zadań też już są, więc może Pan się do tego zabrać tak jak powinno to wyglądać. Btw wyskakuj z portfolio.'), nl,
     write('Marek: Eeeee… no nie wiem, to nie brzmi zbyt dobrze…'), nl,
+    write('Tracisz 50zł'), nl,
     remove_money(50).
 
-dialog(witus, 1) :- 
+dialog(witus, 1) :-
     write('Marek: Siema Wituś! Nie męczą cię te twoje filmiki?'), nl,
     write('Wituś: Jedyne co mnie męczy, to twoja morda. Dawaj hajs i będzie git.'), nl,
+    write('Tracisz 30zł'), nl,
     remove_money(30).
 
-dialog(kozuch, 1) :- 
+dialog(kozuch, 1) :-
     write('Marek: Cześć Kożuch! Słyszałem, że ostatnio miałeś spore wzmożenie dydaktyczne?'), nl,
     write('Kożuch: Miałem, miałem. A jedyne, czego nie mam, to Perwoll. Daj trochę.'), nl,
     write('Marek: Jasne, chętnie. Ile potrzebujesz?'), nl,
@@ -626,179 +628,182 @@ dialog(kozuch, 1) :-
     write('Marek: Uuu, sporo. Jest twój.'), nl,
     add_money(30).
 
-dialog(swieczka, 1) :- 
+dialog(swieczka, 1) :-
     write('Marek: Świeczka! Prawdopodobnie będziesz chciał trochę Persila?'), nl,
     write('Świeczka: Nie Persila, tylko Perwolla. Daj go za 15 złotych.'), nl,
     write('Marek: Ok, trzymaj.'), nl,
     add_money(15).
 
-dialog(sliwka, 1) :- 
+dialog(sliwka, 1) :-
     write('Marek: Śliwka, miło cię widzieć! Słyszałem, że dużo ostatnio chodzisz na ryby?'), nl,
     write('Śliwka: Tak, to prawda. Ostatnio zarzucałem sieci i wpadłem takie bagno, że do tej pory nie doprałem moich spodni. Masz trochę Vizira? Mam przy sobie 20 złotych.'), nl,
     write('Marek: Jasne, powodzenia.'), nl,
     add_money(20).
 
-dialog(krol_julian, 1) :- 
+dialog(krol_julian, 1) :-
     write('Marek: Król Julian! Podobno tak ci brakuje Persila, że prawie zrobiła ci się papka z mózgu i śnisz na jawie. To prawda?'), nl,
     write('Król Julian: Mrrrrrrr'), nl,
     write('Marek: Tak myślałem, powalona Idea. Trzymaj proszek, tylko odpal mi z 10 złotych.'), nl,
     add_money(10).
 
-dialog(duzy_eryk, 1) :- 
+dialog(duzy_eryk, 1) :-
     write('Duży Eryk: Słyszałem, że ostatnio wymieniałeś okna na coś lepszego debilu? Dawaj hajs.'), nl,
+    write('Tracisz 40zł'), nl,
     remove_money(40).
 
-dialog(bialy_crook, 1) :- 
+dialog(bialy_crook, 1) :-
     write('Marek: Siema Crooku! Potrzebujesz czegoś?'), nl,
     write('Biały Crook: Tak, przydałoby się trochę Persila, będziesz miał za 50 złotych?'), nl,
     write('Marek: Jasne, trzymaj. W końcu odpowiadasz za bezpieczeństwo całego systemu.'), nl,
     add_money(50).
 
-dialog(chudy, 1) :- 
+dialog(chudy, 1) :-
     write('Marek: Ale nudy, szkoda mi czasu.'), nl,
     write('Chudy: Nie, zaczekaj! Zapłacę ci.'), nl,
     write('Marek: 25 złotych?'), nl,
     write('Chudy: Może być.'), nl,
     add_money(25).
 
-dialog(jeziorak, 1) :- 
+dialog(jeziorak, 1) :-
     write('Marek: Cześć Jeziorak! Słyszałem, że ostatnio byłeś w Azji?'), nl,
     write('Jeziorak: Tak, cieszę się, że mnie wołałeś. Potrzebny mi cały stos Vizira.'), nl,
     write('Marek: Jasne, mogę ci dać, za 20 złotych.'), nl,
     write('Jeziorak: Chwila, chwila. Pan mnie nie oszukuje? A nie, wszystko w porządku.'), nl,
     add_money(20).
 
-dialog(niespodzianka, 1) :- 
+dialog(niespodzianka, 1) :-
     write('Niespodzianka: Niespodzianka! Wyskakuj z hajsu leszczu.'), nl,
+    write('Tracisz 50zł'), nl,
     remove_money(50).
 
-dialog(charkacz, 1) :- 
+dialog(charkacz, 1) :-
     write('Marek: Hej!'), nl,
-    write('Charkacz: ...'), nl, 
+    write('Charkacz: ...'), nl,
     write('Marek: Aha. Chcesz może Perwoll?'), nl,
     write('Charkacz: Tak. 10zł.'), nl,
     add_money(10).
 
-dialog(mariusz, 1) :- 
+dialog(mariusz, 1) :-
     write('Marek: Cześć! Potrzebujesz czegoś?'), nl,
     write('Mariusz: Tak, chciałbym zmarnować ci trochę czasu.'), nl,
     write('Marek: No nie wiem, a chcesz może Persil?'), nl,
     write('Mariusz: Ty to wiesz, jak przekonać człowieka. Trzymaj 15zł.'), nl,
     add_money(15).
 
-dialog(grabie, 1) :- 
+dialog(grabie, 1) :-
     write('Marek: Siema Grabie! Widzę, że znowu bierzesz się za wszystko jednocześnie?'), nl,
     write('Grabie: Tak, czemu nie. Ale potrzebny mi będzie Vizir. Masz trochę?'), nl,
     write('Marek: Jasne, trzymaj za 15zł.'), nl,
     add_money(15).
 
-dialog(gracjan, 1) :- 
+dialog(gracjan, 1) :-
     write('Marek: Gracjan! Czemu znowu masz przy sobie identyfikator ze swojej pracy?'), nl,
-    write('Gracjan: Żebyś nie zauważył, jak zabrałem ci 50 złotych.'), nl, 
+    write('Gracjan: Żebyś nie zauważył, jak zabrałem ci 50 złotych.'), nl,
+    write('Tracisz 50zł'), nl,
     remove_money(50).
 
     % studenci
-dialog(karol_wietnam, 3) :- 
+dialog(karol_wietnam, 3) :-
     write('Marek: Siema Karol! Wbijasz na domówkę czy wolisz cisnąć AMPPZty?'), nl,
     write('Karol z Wietnamu: Wiesz co, wolałbym pić piwo i jeść pizzę na fakturę. Ale i tak przyjdę!'), nl,
     write('Marek: Super. W takim razie sobota wieczorem, znasz adres.'), nl.
 
-dialog(martynka, 3) :- 
+dialog(martynka, 3) :-
     write('Marek: Martynka! Chcesz przyjść na domówkę?'), nl,
     write('Martynka: Tak, ale chcę cały czas kuć do kolosa z SOI na za tydzień i jeść pizzę hawajską.'), nl,
     write('Marek: No dobra, tylko nie zapomnij czegoś ze sobą zabrać.'), nl.
 
-dialog(kopytek, 3) :- 
+dialog(kopytek, 3) :-
     write('Marek: Siema Kopytek! Nie chcesz może wbić na domóweczkę w ten weekend?'), nl,
     write('Kopytek: No nie wiem, nie wiem. A będę mógł tam obejrzeć anime i się pouczyć?'), nl,
     write('Marek: Tak, tak, będziesz mógł. Zabierz tylko coś do picia.'), nl.
 
-dialog(piotrek, 3) :- 
+dialog(piotrek, 3) :-
     write('Marek: Piotrek, przychodzisz na domówkę? Będzie jeszcze lepsza niż ostatni meczyk u ciebie.'), nl,
     write('Piotrek: A wiesz co, czemu nie. I tak nie mam nic do roboty.'), nl,
     write('Marek: Najs.'), nl.
 
-dialog(bartek, 3) :- 
+dialog(bartek, 3) :-
     write('Marek: Wbijasz w weekend na domóweczkę? Może nawet kupię ci piwo kraftowe.'), nl,
     write('Bartek: Ty to wiesz jak mnie przekonać. Pewnie, że będę.'), nl.
 
-dialog(jureczek, 3) :- 
+dialog(jureczek, 3) :-
     write('Marek: Siema Jureczek! Dawaj na domówkę w ten weekend.'), nl,
     write('Jureczek: Spoko, czemu nie.'), nl.
 
-dialog(tomek, 3) :- 
+dialog(tomek, 3) :-
     write('Marek: Tomek! Chcesz przyjść na domówkę w weekend?'), nl,
     write('Tomek: Jasne, chętnie. Zabiorę coś ze sobą.'), nl.
 
-dialog(wojtek, 3) :- 
+dialog(wojtek, 3) :-
     write('Marek: Wojtek, chcesz wbić na domówkę?'), nl,
     write('Wojtek: Jasne, czemu nie, wezmę ze sobą papierek i ciasteczka. Kiedy ma być?'), nl,
     write('Marek: W sobotę wieczorem, u mnie.'), nl,
     write('Wojtek: Idealnie! W takim razie w sobotę się widzimy.'), nl.
 
-dialog(macius, 3) :- 
+dialog(macius, 3) :-
     write('Maciuś: Ty, a to ostatnie zadanie to nie było na preprocessing?'), nl,
     write('Marek: Maciuś, masz rację. Piszesz kod i wbijaj na domówkę.'), nl,
     write('Maciuś: No dobra, to może nawet coś ze sobą wezmę, na przykład FFT. Ale i tak będziemy robić zadanka. A btw, myślałeś o pracy w Visie?'), nl.
 
-dialog(olek, 3) :- 
+dialog(olek, 3) :-
     write('Marek: Chcesz przyjść na domówkę?'), nl,
     write('Olek: A chcesz pogadać o drzewach przedziałowych?'), nl,
     write('Marek: Eee… wiesz co, może kiedy indziej.'), nl,
     write('Olek: Szkoda. Ale na domówkę i tak przyjdę.'), nl.
 
-dialog(kubus, 3) :- 
+dialog(kubus, 3) :-
     write('Marek: Siema Kubuś, wbijasz na domóweczkę w sobotę wieczorem?'), nl,
     write('Kubuś: Mogę wbić, tylko dokończę pisać projekt z prologa na PARP. Ale 1. Będzie tam jager, 2. Nie idę spać przez ostatnie 3 dni. Pasuje ci to?'), nl,
     write('Marek: Git. To widzimy się w sobotę.'), nl.
 
-dialog(rafalek, 3) :- 
+dialog(rafalek, 3) :-
     write('Marek: Wbijasz na domówkę?'), nl,
     write('Rafałek: Kurde, wbiłbym, ale trzeba zrobić jakąś kampanię marketingową.'), nl,
     write('Marek: Dobra, klienci mogą zaczekać, zrobisz kampanię dla domówki. Robimy chlanie.'), nl,
     write('Rafałek: No dobra. To zabieram jakieś dobre picie i odpalamy domóweczkę.'), nl.
 
-dialog(lukasz_2, 3) :- 
+dialog(lukasz_2, 3) :-
     write('Marek: Siema Łukasz? Mówił ci ktoś, że wyglądasz jak Łukasz i tak samo się nazywasz?'), nl,
     write('Łukasz: Dobra, we. O co chodzi?'), nl,
     write('Marek: Wbijasz na domówkę w sobotę wieczorem?'), nl,
     write('Łukasz: Jasne. To wezmę ze sobą jakieś 0.5.'), nl.
 
-dialog(krzysiu, 3) :- 
+dialog(krzysiu, 3) :-
     write('Marek: Wbijasz na domówkę zachlać mordę?'), nl,
     write('Krzysiu: Uuuuu, już to zoeobłem. Ale jaks ccheszsz , to smo żemy to powtózyć. Mogę znowu kręcić driny.'), nl,
     write('Marek: Git. W takim razie widzimy się w sobotę.'), nl.
 
-dialog(mikolaj, 3) :- 
+dialog(mikolaj, 3) :-
     write('Marek: Dawaj na domóweczkę, napijesz się i będziesz robił pompki.'), nl,
     write('Mikołaj: No dobra, ale pamiętaj, że ja nie piję. Masa sama się nie zrobi na siłce.'), nl,
     write('Marek: Spoko, jasne, damy radę.'), nl.
 
-dialog(jasiulek, 3) :- 
+dialog(jasiulek, 3) :-
     write('Marek: Jasiulek, dawaj chlanie u mnie w sobotę.'), nl,
     write('Jasiulek: Kuuurde, oczywiście, że tak. Wbijam, ale będziecie mnie holować do domu.'), nl.
 
-dialog(mati, 3) :- 
+dialog(mati, 3) :-
     write('Marek: Mati, wbijasz na domóweczkę. Tylko tym razem pamiętaj, że masz dziewczynę xD.'), nl,
     write('Mati: Aha, bardzo zabawne. Wbijam, tym razem postaram się przeżyć do końca.'), nl.
 
-dialog(wiktor, 3) :- 
+dialog(wiktor, 3) :-
     write('Marek: Siema Wiktor, wbijaj na domóweczkę.'), nl,
     write('Wiktor: Spoko, chętnie wbiję.'), nl,
     write('Marek: Giiit. Tylko tym razem coś wypij xD.'), nl,
     write('Wiktor: Jasne, tym razem nie przyjadę samochodem xD.'), nl.
 
-dialog(adrian, 4) :- 
+dialog(adrian, 4) :-
     write('Marek: Adrian! Myślałem, że przyjechałeś TTką, czemu leżysz nad kiblem.'), nl,
     write('Adrian: Blebuegrrbłłl.'), nl.
 
-dialog(rafalek, 4) :- 
+dialog(rafalek, 4) :-
     write('Rafał: Nie przeszkadzaj, Martynka tak dobrze całuje'), nl.
 
-dialog(martynka, 4) :- 
+dialog(martynka, 4) :-
     write('Martynka: Ale Rafał jest przystojny…'), nl.
 
-dialog(_, 4) :- 
+dialog(_, 4) :-
     write('Marek: I jak się bawisz? Warto było wbić na domóweczkę?'), nl,
     write('Jest zajebiście!'), nl.
 
@@ -1043,14 +1048,14 @@ add_item(ItemName) :-
 add_item(_) :-
     write('Error').
 
-add_money(Amount) :- 
+add_money(Amount) :-
     player_money(CurrentMoney),
     NewMoney is CurrentMoney + Amount,
     retract(player_money(CurrentMoney)),
     assert(player_money(NewMoney)),
     write('Otrzymałeś '), write(Amount), write(' zł.'), nl.
 
-remove_money(Amount) :- 
+remove_money(Amount) :-
     player_money(CurrentMoney),
     NewMoney is CurrentMoney - Amount,
     NewMoney < 0,
@@ -1058,7 +1063,7 @@ remove_money(Amount) :-
     retract(player_money(CurrentMoney)),
     assert(player_money(NewMoney2)).
 
-remove_money(Amount) :- 
+remove_money(Amount) :-
     player_money(CurrentMoney),
     NewMoney is CurrentMoney - Amount,
     NewMoney >= 0,
@@ -1128,7 +1133,7 @@ win(0) :-
     write('Równowaga na Targówku została zaburzona. Andżej przejął władzę na Targówku, na Wydziale i w prawie całej Warszawie. Jedyna nadzieja w Śródmieściu i Grochowie, gdzie zaczyna powstawać ruch oporu...'),nl,
     end.
 
-end :- 
+end :-
     write('Dziękujemy za przejście gry i widzimy się w najbliższym DLC, napisanym w Haskellu!'),nl,
     write('Aby zakończyć grę wpisz halt'), nl.
 
@@ -1212,11 +1217,11 @@ start :-
 
 start.
 
-help :- 
+help :-
     write('Możesz używać komend: north, east, south, west, describe, pick \'Przedmiot\', talk \'Imię\' oraz help'), nl,
     write('Aby użyć natywnego terminala SWIPL wpisz quit. Aby użyć trybu domyślnego wpisz run.'),nl.
 
-describe :- 
+describe :-
     player_location(Location),
     describe_location(Location).
 
@@ -1224,12 +1229,12 @@ describe :-
 :- op(200, fx, pick). % Define 'pick' as a prefix operator
 :- op(200, fx, use). % Define 'use' as a prefix operator
 
-talk NPCName :- 
+talk NPCName :-
     atom(NPCName), % Ensure NPCName is an atom
     name(VarName, NPCName),
     talk_to(VarName). % Call the talk_to/1 predicate
 
-pick Name :- 
+pick Name :-
     atom(Name), % Ensure NPCName is an atom
     name(VarName, Name),
     pick_up(VarName). % Call the talk_to/1 predicate
