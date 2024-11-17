@@ -786,7 +786,7 @@ spawn_npcs(Quality, GuestList) :-
     Quality > 1,
     spawn_better_loop(GuestList).
 
-spawn_npcs(Quality, GuestList),
+spawn_npcs(_, GuestList) :-
     spawn_worse_loop(GuestList).
 
 spawn_better_loop([]).
@@ -818,7 +818,7 @@ spawn_worse_npc(NpcName, Expected) :-
     check_if_has_item(Expected),
     add_worse_item(NpcName, Expected).
 
-spawn_worse_npc(NpcName, _).
+spawn_worse_npc(_, _).
 
 
 add_worse_item(NpcName, Expected) :-
