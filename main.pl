@@ -896,12 +896,12 @@ go_to_map(domowka) :-
     assert(player_location(parkiet)),
     retract(game_state(3)),
     assert(game_state(4)),
-    describe_location(parkiet),
     guests_count(GuestsCount),
     party_quality(SumedQuality),
     Quality is SumedQuality/GuestsCount,
     guest_list(GuestList),
-    spawn_npcs(Quality, GuestList).
+    spawn_npcs(Quality, GuestList),
+    describe_location(parkiet).
 
 go_to_map(drzwi_wejsciowe) :-
     retract(player_location(parkiet)),
