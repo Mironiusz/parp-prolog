@@ -7,6 +7,9 @@
 :- dynamic(game_state/1).
 :- dynamic(party_quality/1).
 :- dynamic(guests_count/1).
+:- dynamic(in_fight/1).
+:- dynamic(player_hp/1).
+:- dynamic(enemy_hp/1).
 
 :- dynamic(npc/2).
 :- dynamic(positioned_item/2).
@@ -23,7 +26,10 @@ guest_list([]).
 player_money(300).
 game_state(0).
 party_quality(0).
-guests_count(0).
+guests_count(1).
+in_fight(0).
+player_hp(100).
+enemy_hp(100).
 /* Definicja lokalizacji */
 % map(Nazwa)
 
@@ -1047,37 +1053,64 @@ talk_to(_) :-
 
 /* Mechanika walki */
 init_fight :-
+    retract(in_fight(0)),
+    assert(in_fight(1)),
+    write('Atakuj use \'Przedmiot\''), nl,
+    player_hp(PlayerHP),
+    enemy_hp(EnemyHP),
     player_inventory(Inventory),
-    fight_loop(100, 100, Inventory).
+    fight_check(EnemyHP, PlayerHP, Inventory).
+    
 
-fight_loop(PlayerHP, _, _) :-
-    PlayerHP =< 0,
-    write('Przegrałeś walkę.'), nl.
+fight_check(0, _, _) :-
+    write('Wygrałeś'),
+    retract(in_fight(1)),
+    assert(in_fight(0)).
 
-fight_loop(_, EnemyHP, _) :-
-    EnemyHP =< 0,
-    write('Wygrałeś walkę!'), nl.
 
-fight_loop(PlayerHP, EnemyHP, Inventory) :-
+fight_check(_, 0, _) :-
+    write('Przegrałeś'),
+    retract(in_fight(1)),
+    assert(in_fight(0)).
+
+fight_check(_, _, []) :-
+    write('Przegrałeś'),
+    retract(in_fight(1)),
+    assert(in_fight(0)).
+
+fight_check(EnemyHP, PlayerHP, Inventory) :-
     write('Twoje HP: '), write(PlayerHP), nl,
     write('HP Andżeja: '), write(EnemyHP), nl,
-    write('Twoje przedmioty: '), write(Inventory), nl,
-    write('Wybierz przedmiot do użycia: '), nl,
-    read(ItemName),
-    use_item(ItemName, Damage, Heal),
-    NewEnemyHP is EnemyHP - Damage,
+    write('Twoje przedmioty: '), write(Inventory), nl.
+
+fight_iteration(PlayerHP, EnemyHP, Heal, Damage, Inventory, FinalPlayerHP, NewEnemyHP) :-
     NewPlayerHP is PlayerHP + Heal,
+    NewEnemyHP is EnemyHP - Damage,
     enemy_attack(NewPlayerHP, FinalPlayerHP),
-    fight_loop(FinalPlayerHP, NewEnemyHP, Inventory).
+    fight_check(NewEnemyHP, FinalPlayerHP, Inventory).
 
-use_item(ItemName, Damage, Heal) :-
+use_item(Name) :-
     player_inventory(Inventory),
-    member(ItemName, Inventory),
-    fight_item(ItemName, Heal, Damage),
-    write('Użyłeś '), write(ItemName), nl.
+    use_loop(Name, Inventory, NewInventory),
+    fight_item(Name, Heal, Damage),
+    retract(player_inventory(Inventory)),
+    assert(player_inventory(NewInventory)),
+    write('Użyłeś: '), description(Name),
+    player_hp(PlayerHP),
+    enemy_hp(EnemyHP),
+    fight_iteration(PlayerHP, EnemyHP, Heal, Damage, NewInventory, NewPlayerHP, NewEnemyHP),
+    retract(player_hp(PlayerHP)),
+    assert(player_hp(NewPlayerHP)),
+    retract(enemy_hp(EnemyHP)),
+    assert(enemy_hp(NewEnemyHP)).
 
-use_item(_, _, _) :-
+use_item(_) :-
     write('Nie możesz użyć tego przedmiotu.'), nl.
+
+use_loop(X, [X|R], R).
+
+use_loop(X, [H|R], [H|O]) :-
+    use_loop(X, R, O).
 
 enemy_attack(PlayerHP, NewPlayerHP) :-
     Damage is 10,
@@ -1136,6 +1169,7 @@ describe :-
 
 :- op(200, fx, talk). % Define 'talk' as a prefix operator
 :- op(200, fx, pick). % Define 'pick' as a prefix operator
+:- op(200, fx, use). % Define 'use' as a prefix operator
 
 talk NPCName :- 
     atom(NPCName), % Ensure NPCName is an atom
@@ -1146,3 +1180,12 @@ pick Name :-
     atom(Name), % Ensure NPCName is an atom
     name(VarName, Name),
     pick_up(VarName). % Call the talk_to/1 predicate
+
+use Name :-
+    atom(Name),
+    name(VarName, Name),
+    in_fight(1),
+    use_item(VarName).
+
+use _ :-
+    write('Komenda tylko do użycia w walce'), nl.
