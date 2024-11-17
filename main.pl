@@ -809,7 +809,7 @@ dialog(martynka, 4) :-
 
 dialog(_, 4) :-
     write('Marek: I jak się bawisz? Warto było wbić na domóweczkę?'), nl,
-    write('Jest zajebiście!'), nl.
+    write('Jest świetnie!'), nl.
 
 
 dialog(babcia, 1) :-
