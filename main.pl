@@ -20,7 +20,7 @@ party_inventory([]).
 guest_list([]).
 
 % Początkowa ilość pieniędzy gracza
-player_money(0).
+player_money(300).
 game_state(0).
 party_quality(0).
 guests_count(0).
@@ -1015,9 +1015,9 @@ remove_money(Amount) :-
     player_money(CurrentMoney),
     NewMoney is CurrentMoney - Amount,
     NewMoney < 0,
-    NewMoney is 0,
+    NewMoney2 is 0,
     retract(player_money(CurrentMoney)),
-    assert(player_money(NewMoney)).
+    assert(player_money(NewMoney2)).
 
 remove_money(Amount) :- 
     player_money(CurrentMoney),
@@ -1088,33 +1088,33 @@ enemy_attack(PlayerHP, NewPlayerHP) :-
 invite(rafalek) :-
     guest_list(Guests),
     retract(guest_list(Guests)),
-    assert(guest_list([Guests|rafalek])),
+    assert(guest_list([rafalek|Guests])),
     guest_list(Guests2),
     retract(guest_list(Guests2)),
-    assert(guest_list([Guests2|martynka])),
-    retract(npc(martynka, sala_wykladowa)),
+    assert(guest_list([martynka|Guests2])),
     guests_count(CurrentCount),
     NewCount is CurrentCount + 2,
     retract(guests_count(CurrentCount)),
-    assert(guests_count(NewCount)).
+    assert(guests_count(NewCount)),
+    retract(npc(martynka, sala_wykladowa)).
 
 invite(martynka) :-
     guest_list(Guests),
     retract(guest_list(Guests)),
-    assert(guest_list([Guests|rafalek])),
+    assert(guest_list([rafalek|Guests])),
     guest_list(Guests2),
     retract(guest_list(Guests2)),
-    assert(guest_list([Guests2|martynka])),
-    retract(npc(rafalek, laboratorium_sieciowe)),
+    assert(guest_list([martynka|Guests2])),
     guests_count(CurrentCount),
     NewCount is CurrentCount + 2,
     retract(guests_count(CurrentCount)),
-    assert(guests_count(NewCount)).
+    assert(guests_count(NewCount)),
+    retract(npc(rafalek, laboratorium_sieciowe)).
 
 invite(GuestName) :-
     guest_list(Guests),
     retract(guest_list(Guests)),
-    assert(guest_list([Guests|GuestName])),
+    assert(guest_list([GuestName|Guests])),
     guests_count(CurrentCount),
     NewCount is CurrentCount + 1,
     retract(guests_count(CurrentCount)),
