@@ -6,6 +6,7 @@
 :- dynamic(guest_list/1).
 :- dynamic(game_state/1).
 :- dynamic(party_quality/1).
+:- dynamic(guests_count/1).
 
 :- dynamic(npc/2).
 :- dynamic(positioned_item/2).
@@ -22,6 +23,7 @@ guest_list([]).
 player_money(0).
 game_state(0).
 party_quality(0).
+guests_count(0).
 /* Definicja lokalizacji */
 % map(Nazwa)
 
@@ -779,6 +781,59 @@ dialog(_, 4) :-
 dialog(babcia, 1) :-
     write('Spierdal zjebie!'), nl.
 
+/* spawn npc na imprezie */
+spawn_npcs(Quality, GuestList) :-
+    Quality > 1,
+    spawn_better_loop(GuestList).
+
+spawn_npcs(Quality, GuestList),
+    spawn_worse_loop(GuestList).
+
+spawn_better_loop([]).
+spawn_better_loop([Guest | Tail]) :-
+    assert(npc(Guest, parkiet)),
+    prezent(Guest, Expected, _, _),
+    spawn_better_npc(Guest, Expected),
+    spawn_better_loop(Tail).
+
+spawn_better_npc(NpcName, Expected) :-
+    check_if_has_item(Expected),
+    add_better_item(NpcName, Expected).
+
+spawn_better_npc(NpcName, Expected) :-
+    add_worse_item(NpcName, Expected).
+
+add_better_item(NpcName, Expected) :-
+    prezent(NpcName, Expected, _, Item),
+    add_item(Item).
+
+spawn_worse_loop([]).
+spawn_worse_loop([Guest | Tail]) :-
+    assert(npc(Guest, parkiet)),
+    prezent(Guest, Expected, _, _),
+    spawn_worse_npc(Guest, Expected),
+    spawn_worse_loop(Tail).
+
+spawn_worse_npc(NpcName, Expected) :-
+    check_if_has_item(Expected),
+    add_worse_item(NpcName, Expected).
+
+spawn_worse_npc(NpcName, _).
+
+
+add_worse_item(NpcName, Expected) :-
+    prezent(NpcName, Expected, Item, _),
+    add_item(Item).
+
+check_if_has_item(ExpectedItem) :-
+    party_inventory(Items),
+    check_if_has_item_loop(ExpectedItem, Items).
+
+check_if_has_item_loop(X, [X|_]).
+check_if_has_item_loop(X, [_|T]) :-
+    check_if_has_item_loop(X, T).
+
+
 /* Mechanika poruszania się */
 % go_to_map(map_name) :- all thing to move beetwen maps
 go_to_map(pokoj_babci) :-
@@ -815,7 +870,12 @@ go_to_map(domowka) :-
     assert(player_location(parkiet)),
     retract(game_state(3)),
     assert(game_state(4)),
-    describe_location(parkiet).
+    describe_location(parkiet),
+    guests_count(GuestsCount),
+    party_quality(SumedQuality),
+    Quality is SumedQuality/GuestsCount,
+    guest_list(GuestList),
+    spawn_npcs(Quality, GuestList).
 
 go_to_map(drzwi_wejsciowe) :-
     retract(player_location(parkiet)),
@@ -1032,7 +1092,11 @@ invite(rafalek) :-
     guest_list(Guests2),
     retract(guest_list(Guests2)),
     assert(guest_list([Guests2|martynka])),
-    retract(npc(martynka, sala_wykladowa)).
+    retract(npc(martynka, sala_wykladowa)),
+    guests_count(CurrentCount),
+    NewCount is CurrentCount + 2,
+    retract(guests_count(CurrentCount)),
+    assert(guests_count(NewCount)).
 
 invite(martynka) :-
     guest_list(Guests),
@@ -1041,19 +1105,30 @@ invite(martynka) :-
     guest_list(Guests2),
     retract(guest_list(Guests2)),
     assert(guest_list([Guests2|martynka])),
-    retract(npc(rafalek, laboratorium_sieciowe)).
+    retract(npc(rafalek, laboratorium_sieciowe)),
+    guests_count(CurrentCount),
+    NewCount is CurrentCount + 2,
+    retract(guests_count(CurrentCount)),
+    assert(guests_count(NewCount)).
 
 invite(GuestName) :-
     guest_list(Guests),
     retract(guest_list(Guests)),
-    assert(guest_list([Guests|GuestName])).
+    assert(guest_list([Guests|GuestName])),
+    guests_count(CurrentCount),
+    NewCount is CurrentCount + 1,
+    retract(guests_count(CurrentCount)),
+    assert(guests_count(NewCount)).
 
 /* Uruchomienie gry */
 start :-
+    player_location(pokoj_marka),
     write('Witaj w grze "Targówka na Domówku 2: Powrót Andżeja"!'), nl,
     write('Twoim celem jest zorganizowanie epickiej domówki.'), nl,
-    write('Możesz używać komend: north, east, south, west, pick \'Przedmiot\', talk \'Imię\''), nl,
+    write('Możesz używać komend: north, east, south, west, describe, pick \'Przedmiot\', talk \'Imię\''), nl,
     describe_location(pokoj_marka).
+
+start.
 
 describe :- 
     player_location(Location),
