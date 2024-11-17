@@ -10,6 +10,7 @@
 :- dynamic(in_fight/1).
 :- dynamic(player_hp/1).
 :- dynamic(enemy_hp/1).
+:- dynamic(money_item_taken/1).
 
 :- dynamic(npc/2).
 :- dynamic(positioned_item/2).
@@ -23,6 +24,7 @@ party_inventory([]).
 guest_list([]).
 
 % Początkowa ilość pieniędzy gracza
+money_item_taken(0).
 player_money(300).
 game_state(0).
 party_quality(0).
@@ -158,7 +160,12 @@ positioned_item(giga_okularki, pokoj_marka).
 positioned_item(koszulka_z_amppz, pokoj_marka).
 
     % pokoj babci
-
+positioned_item(skarpetka, pokoj_babci).
+positioned_item(lupa, pokoj_babci).
+positioned_item(stare_zdjecie, pokoj_babci).
+positioned_item(szczeka, pokoj_babci).
+positioned_item(tabletki, pokoj_babci).
+positioned_item(telefon, pokoj_babci).
 
     % targowek
 positioned_item(fags, jorskiego).
@@ -275,7 +282,12 @@ fight_item(suprise, 1, 8).
 fight_item(szybkie_okularki, 10, 0).
 
 % money_item(name, price).
+money_item(skarpetka, 50).
+money_item(lupa, 10).
+money_item(stare_zdjecie, 100).
 money_item(szczeka, 100).
+money_item(tabletki, 100).
+money_item(telefon, 3).
 
 
 % party_item(name, price, quality).
@@ -468,6 +480,13 @@ name(giga_okularki, 'Giga okularki').
 name(koszulka_z_amppz, 'Koszulka z AMPPZ').
 
     % pokoj babci
+name(skarpetka, 'Skarpetka').
+name(lupa, 'Lupa').
+name(stare_zdjecie, 'Stare zdjęcie').
+name(szczeka, 'Szczęka').
+name(tabletki, 'Tabletki').
+name(telefon, 'Telefon').
+
 
     % targowek
 name(fags, 'Szlugi').
@@ -785,7 +804,8 @@ dialog(_, 4) :-
 
 
 dialog(babcia, 1) :-
-    write('Spierdal zjebie!'), nl.
+    write('Babcia: Masz wnusiu 50 zł na alkohol'), nl,
+    add_money(50).
 
 /* spawn npc na imprezie */
 spawn_npcs(Quality, GuestList) :-
@@ -966,10 +986,23 @@ pick_up(ItemName) :-
 pick_up(_) :-
     write('Nie ma tu takiego przedmiotu.'), nl.
 
+% babcia fight element
+check_if_too_greedy(ItemCount) :-
+    ItemCount = 4,
+    write('Babcia: Ty mały złodzieju! Wypad!'),nl,nl,
+    go_to_map(makro).
+
+check_if_too_greedy(_).
+
 % money item
 add_item(ItemName) :-
     money_item(ItemName, Price),
-    add_money(Price).
+    add_money(Price),
+    money_item_taken(ItemCount),
+    NewItemCount is ItemCount + 1,
+    retract(money_item_taken(ItemCount)),
+    assert(money_item_taken(NewItemCount)),
+    check_if_too_greedy(NewItemCount).
 
 % party item < 0
 add_item(ItemName) :-
@@ -1078,6 +1111,11 @@ fight_check(_, _, []) :-
     retract(in_fight(1)),
     assert(in_fight(0)).
 
+fight_check(EnemyHP, PlayerHP, Inventory) :-
+    write('Twoje HP: '), write(PlayerHP), nl,
+    write('HP Andżeja: '), write(EnemyHP), nl,
+    write('Twoje przedmioty: '), nl, print_loop(Inventory).
+
 win(1) :-
     write('Po długiej i wymagającej walce, Andżej traci przytomność i jak menel leży na ziemi.'),nl,
     write('Wszyscy na domówce, jeśli jeszcze kontaktują, zaczynają świętować wielkie zwycięstwo Marka.'),nl,
@@ -1093,13 +1131,6 @@ win(0) :-
 end :- 
     write('Dziękujemy za przejście gry i widzimy się w najbliższym DLC, napisanym w Haskellu!'),nl,
     write('Aby zakończyć grę wpisz halt'), nl.
-
-
-
-fight_check(EnemyHP, PlayerHP, Inventory) :-
-    write('Twoje HP: '), write(PlayerHP), nl,
-    write('HP Andżeja: '), write(EnemyHP), nl,
-    write('Twoje przedmioty: '), nl, print_loop(Inventory).
 
 fight_iteration(PlayerHP, EnemyHP, Heal, Damage, Inventory, FinalPlayerHP, NewEnemyHP) :-
     NewPlayerHP is PlayerHP + Heal,
@@ -1179,6 +1210,8 @@ start :-
     help,
     describe_location(pokoj_marka).
 
+start.
+
 help :- 
     write('Możesz używać komend: north, east, south, west, describe, pick \'Przedmiot\', talk \'Imię\' oraz help'), nl.
 
@@ -1200,15 +1233,15 @@ pick Name :-
     name(VarName, Name),
     pick_up(VarName). % Call the talk_to/1 predicate
 
+use _ :-
+    in_fight(0),
+    write('Komenda tylko do użycia w walce'), nl.
+
 use Name :-
     in_fight(1),
     atom(Name),
     name(VarName, Name),
     use_item(VarName).
-
-use _ :-
-    in_fight(0),
-    write('Komenda tylko do użycia w walce'), nl.
 
 use _ :-
     write('Niepoprawny przedmiot'), nl.
