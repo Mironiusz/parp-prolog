@@ -25,13 +25,17 @@ guest_list([]).
 
 % Początkowa ilość pieniędzy gracza
 money_item_taken(0).
-player_money(300).
+player_money(0).
 game_state(0).
 party_quality(0).
 guests_count(1).
 in_fight(0).
 player_hp(100).
 enemy_hp(100).
+
+is_lover(rafalek).
+is_lover(martynka).
+
 /* Definicja lokalizacji */
 % map(Nazwa)
 
@@ -822,7 +826,9 @@ spawn_npcs(_, GuestList) :-
 
 spawn_better_loop([]).
 spawn_better_loop([Guest | Tail]) :-
-    assert(npc(Guest, parkiet)),
+    (is_lover(Guest) -> 
+    assert(npc(Guest, epicka_lazienka)); 
+    assert(npc(Guest, parkiet))),
     prezent(Guest, Expected, _, _),
     spawn_better_npc(Guest, Expected),
     spawn_better_loop(Tail).
@@ -840,7 +846,9 @@ add_better_item(NpcName, Expected) :-
 
 spawn_worse_loop([]).
 spawn_worse_loop([Guest | Tail]) :-
-    assert(npc(Guest, parkiet)),
+    (is_lover(Guest) -> 
+    assert(npc(Guest, epicka_lazienka)); 
+    assert(npc(Guest, parkiet))),
     prezent(Guest, Expected, _, _),
     spawn_worse_npc(Guest, Expected),
     spawn_worse_loop(Tail).
@@ -863,7 +871,6 @@ check_if_has_item(ExpectedItem) :-
 check_if_has_item_loop(X, [X|_]).
 check_if_has_item_loop(X, [_|T]) :-
     check_if_has_item_loop(X, T).
-
 
 /* Mechanika poruszania się */
 % go_to_map(map_name) :- all thing to move beetwen maps
@@ -994,7 +1001,8 @@ pick_up(_) :-
 % babcia fight element
 check_if_too_greedy(ItemCount) :-
     ItemCount = 4,
-    write('Babcia: Ty mały złodzieju! Wypad!'),nl,nl,
+    write('Babcia: Ty mały złodzieju! Wypad!'),nl,
+    write('Marek: Dobra, idę do Makro...'),nl,nl,
     go_to_map(makro).
 
 check_if_too_greedy(_).
@@ -1091,9 +1099,13 @@ talk_to(_) :-
 
 /* Mechanika walki */
 init_fight :-
+    write('Marek: Andżej? Co ty tutaj robisz?'),nl,
+    write('Andżej: Buhahaha! Nie zaprosiłeś mnie na domówkę, więc przyszedłem sam.'),nl,
+    write('Nie obchodzi mnie, że sam ciągle o wszystkim zapominam! Szykuj się na zniszczenie domówki!'),nl,
+    write('Marek: Niedobrze. Będę musiał sobie z nim jakoś poradzić.'),nl,nl,
     retract(in_fight(0)),
     assert(in_fight(1)),
-    write('Atakuj use \'Przedmiot\''), nl,
+    write('Atak: use \'Przedmiot\''), nl,
     player_hp(PlayerHP),
     enemy_hp(EnemyHP),
     player_inventory(Inventory),
