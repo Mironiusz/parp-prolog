@@ -291,29 +291,29 @@ money_item(telefon, 3).
 
 
 % party_item(name, price, quality).
-party_item(bison, 5, 1).
-party_item(jungle_ghost, 10, 2).
+party_item(bison, 30, 1).
+party_item(jungle_ghost, 20, 2).
 party_item(jager, 50, 25).
-party_item(harnold, 5, 1).
+party_item(harnold, 3, 1).
 party_item(komandos, 5, 2).
 party_item(orzech, 25, 15).
-party_item(smerf, 20, 5).
-party_item(pepperoni, 15, 6).
-party_item(hawaii, 15, 1).
+party_item(smerf, 10, 5).
+party_item(pepperoni, 30, 6).
+party_item(hawaii, 30, 1).
 party_item(lays_solone, 10, 5).
 party_item(lays_papryka, 10, 6).
 party_item(doritos_ser, 20, 8).
 party_item(cheetos_ketchup, 15, 4).
-party_item(pepsi, 3, 1).
-party_item(cola, 3, 2).
+party_item(pepsi, 20, 1).
+party_item(cola, 20, 2).
 party_item(rebull_z_makro, 7, 3).
 party_item(tiger, 6, 2).
 party_item(kong_strong, 6, 1).
-party_item(vizir, 6, 6).
-party_item(persil, 5, 5).
-party_item(perwool, 8, 8).
-party_item(ciasteczka_smiechu, 10, 10).
-party_item(kosmiczny_papierek, 20, 40).
+party_item(vizir, 30, 6).
+party_item(persil, 30, 5).
+party_item(perwool, 30, 8).
+party_item(ciasteczka_smiechu, 50, 10).
+party_item(kosmiczny_papierek, 50, 40).
 
 /* Definicja postaci NPC */
 % npc(Nazwa, Localization).
