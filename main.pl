@@ -210,8 +210,8 @@ positioned_item(szybkie_okularki, parkiet).
 
 % fight_item(name, healing_effect, damage_effect).
     % pokoj marka
-fight_item(giga_okularki, 0, 5).
-fight_item(koszulka_z_amppz, 0, 100).
+fight_item(giga_okularki, 0, 55).
+fight_item(koszulka_z_amppz, 0, 55).
 
     % targowek
 fight_item(fags, 10, 1).
@@ -940,7 +940,7 @@ display_npcs(CurrentLocation) :-
 
 print_moves([]).
 print_moves([Direction-NextLocation | Tail]) :-
-    write(Direction), write(' -> '), write(NextLocation), nl,
+    write(Direction), write(' -> '), description(NextLocation),
     print_moves(Tail).
 
 print_loop([]).
@@ -1060,28 +1060,46 @@ init_fight :-
     enemy_hp(EnemyHP),
     player_inventory(Inventory),
     fight_check(EnemyHP, PlayerHP, Inventory).
-    
 
-fight_check(0, _, _) :-
-    write('Wygrałeś'),
+fight_check(EnemyHP, _, _) :-
+    EnemyHP =< 0,
+    win(1),
     retract(in_fight(1)),
     assert(in_fight(0)).
 
-
-fight_check(_, 0, _) :-
-    write('Przegrałeś'),
+fight_check(_, PlayerHP, _) :-
+    PlayerHP =< 0,
+    win(0),
     retract(in_fight(1)),
     assert(in_fight(0)).
 
 fight_check(_, _, []) :-
-    write('Przegrałeś'),
+    win(0),
     retract(in_fight(1)),
     assert(in_fight(0)).
+
+win(1) :-
+    write('Po długiej i wymagającej walce, Andżej traci przytomność i jak menel leży na ziemi.'),nl,
+    write('Wszyscy na domówce, jeśli jeszcze kontaktują, zaczynają świętować wielkie zwycięstwo Marka.'),nl,
+    write('W końcu równowaga na Targówku została przywrócona. Marek zdobył szacunek na dzielni rozprawiając się z Andżejem, a Andżej został zesłany na Białołękę (albo nawet Wawer - ale nikt nie wie, bo nikt nigdy tam nie dotarł).'),nl,
+    end.
+
+win(0) :-
+    write('Po długiej i wymagającej walce, Marek traci przytomność i jak menel leży na ziemi.'),nl,
+    write('Wszyscy na domówce, jeśli jeszcze kontaktują, są przerażeni wynikiem walki i nikt nie może być pewien, co go czeka...'),nl,
+    write('Równowaga na Targówku została zaburzona. Andżej przejął władzę na Targówku, na Wydziale i w prawie całej Warszawie. Jedyna nadzieja w Śródmieściu i Grochowie, gdzie zaczyna powstawać ruch oporu...'),nl,
+    end.
+
+end :- 
+    write('Dziękujemy za przejście gry i widzimy się w najbliższym DLC, napisanym w Haskellu!'),nl,
+    write('Aby zakończyć grę wpisz halt'), nl.
+
+
 
 fight_check(EnemyHP, PlayerHP, Inventory) :-
     write('Twoje HP: '), write(PlayerHP), nl,
     write('HP Andżeja: '), write(EnemyHP), nl,
-    write('Twoje przedmioty: '), write(Inventory), nl.
+    write('Twoje przedmioty: '), nl, print_loop(Inventory).
 
 fight_iteration(PlayerHP, EnemyHP, Heal, Damage, Inventory, FinalPlayerHP, NewEnemyHP) :-
     NewPlayerHP is PlayerHP + Heal,
@@ -1158,10 +1176,11 @@ start :-
     player_location(pokoj_marka),
     write('Witaj w grze "Targówka na Domówku 2: Powrót Andżeja"!'), nl,
     write('Twoim celem jest zorganizowanie epickiej domówki.'), nl,
-    write('Możesz używać komend: north, east, south, west, describe, pick \'Przedmiot\', talk \'Imię\''), nl,
+    help,
     describe_location(pokoj_marka).
 
-start.
+help :- 
+    write('Możesz używać komend: north, east, south, west, describe, pick \'Przedmiot\', talk \'Imię\' oraz help'), nl.
 
 describe :- 
     player_location(Location),
@@ -1182,10 +1201,23 @@ pick Name :-
     pick_up(VarName). % Call the talk_to/1 predicate
 
 use Name :-
+    in_fight(1),
     atom(Name),
     name(VarName, Name),
-    in_fight(1),
     use_item(VarName).
 
 use _ :-
+    in_fight(0),
     write('Komenda tylko do użycia w walce'), nl.
+
+use _ :-
+    write('Niepoprawny przedmiot'), nl.
+
+run :-
+    read_line_to_string(user_input, Input), % Read input without needing a dot
+    atom_string(Atom, Input),
+    term_to_atom(Command, Atom), % Convert the string to a Prolog term
+    (call(Command) -> true ; write('Invalid command.'), nl),
+    run.
+
+:- run.
