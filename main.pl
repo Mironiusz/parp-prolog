@@ -1213,7 +1213,8 @@ start :-
 start.
 
 help :- 
-    write('Możesz używać komend: north, east, south, west, describe, pick \'Przedmiot\', talk \'Imię\' oraz help'), nl.
+    write('Możesz używać komend: north, east, south, west, describe, pick \'Przedmiot\', talk \'Imię\' oraz help'), nl,
+    write('Aby użyć natywnego terminala SWIPL wpisz quit. Aby użyć trybu domyślnego wpisz run.'),nl.
 
 describe :- 
     player_location(Location),
@@ -1249,8 +1250,9 @@ use _ :-
 run :-
     read_line_to_string(user_input, Input), % Read input without needing a dot
     atom_string(Atom, Input),
+    (Atom = 'quit'-> write('Native mode');
     term_to_atom(Command, Atom), % Convert the string to a Prolog term
     (call(Command) -> true ; write('Invalid command.'), nl),
-    run.
+    run).
 
 :- run.
