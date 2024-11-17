@@ -343,7 +343,6 @@ npc(wiktor, korytarz_1_pietro).
 npc(adrian, epicka_lazienka).
 
 
-
 % prezent(name, expectedItem, weak, strong).
 prezent(rafalek, komandos, pusta_puszka, szalik_legii).
 prezent(kubus, jager, pusta_butelka, zoladkowa_gorzka).
@@ -358,7 +357,7 @@ prezent(bartek, kong_strong, puste_piwo_kraftowe, tulipan_po_zubrowce).
 prezent(wojtek, kosmiczny_papierek, pusta_strzykawka, pelna_strzykawka).
 prezent(kopytek, lays_papryka, zelda_na_nintendo_switch, rude_wlosy).
 prezent(jasiulek, harnold, pusta_puszka, pelna_puszka).
-prezent(karol_z_wietnamu, pepperoni, karty_wzorow_na_amppzty, sajgonki_na_fakture).
+prezent(karol_wietnam, pepperoni, karty_wzorow_na_amppzty, sajgonki_na_fakture).
 prezent(lukasz_2, persil, mleko_od_starego, jabol_w_puszce).
 prezent(mati, ciasteczka_smiechu, szachy, baniak_jabola).
 prezent(piotrek, cheetos_ketchup, cegla, baseball).
