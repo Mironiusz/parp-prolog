@@ -298,10 +298,54 @@ party_item(kosmiczny_papierek, 20, 40).
 /* Definicja postaci NPC */
 % npc(Nazwa, Localization).
 npc(babcia, pokoj_babci).
-npc(andrzej, drzwi_wejsciowe).
+
+    % cpuny kibole
+npc(krzemarz, jorskiego). 
+npc(jacus, jorskiego). 
+npc(sobix, jorskiego). 
+npc(traba, jorskiego). 
+npc(krolik, jorskiego).
+npc(strozyk, jorskiego). 
+npc(witus, jorskiego). 
+npc(kozuch, radzyminska). 
+npc(swieczka, radzyminska). 
+npc(krol_julian, radzyminska). 
+npc(sliwka, radzyminska). 
+npc(duzy_eryk, radzyminska). 
+npc(bialy_crook, blokowa). 
+npc(chudy, blokowa). 
+npc(jeziorak, blokowa). 
+npc(niespodzianka, blokowa). 
+npc(charkacz, ogrodnicza). 
+npc(mariusz, ogrodnicza). 
+npc(grabie, ogrodnicza). 
+npc(gracjan, ogrodnicza). 
+
+    % studenci
+npc(karol_wietnam, wietnam).
+npc(martynka, sala_wykladowa).
+npc(kopytek, sala_wykladowa).
+npc(piotrek, piwnica).
+npc(bartek, piwnica).
+npc(jureczek, piwnica_piwnicy).
+npc(tomek, piwnica_piwnicy).
+npc(wojtek, piwnica_piwnicy).
+npc(macius, laboratorium_komputerowe).
+npc(olek, laboratorium_komputerowe).
+npc(kubus, laboratorium_komputerowe).
+npc(rafalek, laboratorium_sieciowe).
+npc(lukasz_2, laboratorium_sieciowe).
+npc(krzysiu, meski_kibel).
+npc(mikolaj, meski_kibel).
+npc(jasiulek, meski_kibel).
+npc(mati, korytarz_1_pietro).
+npc(wiktor, korytarz_1_pietro).
+npc(adrian, epicka_lazienka).
+
+
 
 % prezent(name, expectedItem, weak, strong).
-prezent(rafal, komandos, pusta_puszka, szalik_legii).
+prezent(rafalek, komandos, pusta_puszka, szalik_legii).
 prezent(kubus, jager, pusta_butelka, zoladkowa_gorzka).
 prezent(macius, rebull_z_makro, sloik, duzy_czarny_kogut).
 prezent(krzysiu, harnold, flaga_lecha, gaz_pieprzowy).
@@ -722,7 +766,7 @@ dialog(adrian, 4) :-
     write('Marek: Adrian! Myślałem, że przyjechałeś TTką, czemu leżysz nad kiblem.'), nl,
     write('Adrian: Blebuegrrbłłl.'), nl.
 
-dialog(rafal, 4) :- 
+dialog(rafalek, 4) :- 
     write('Rafał: Nie przeszkadzaj, Martynka tak dobrze całuje'), nl.
 
 dialog(martynka, 4) :- 
@@ -982,6 +1026,24 @@ enemy_attack(PlayerHP, NewPlayerHP) :-
     write('Andżej atakuje i zadaje '), write(Damage), write(' obrażeń.'), nl.
 
 /* Mechanika zapraszania gości */
+invite(rafalek) :-
+    guest_list(Guests),
+    retract(guest_list(Guests)),
+    assert(guest_list([Guests|rafalek])),
+    guest_list(Guests2),
+    retract(guest_list(Guests2)),
+    assert(guest_list([Guests2|martynka])),
+    retract(npc(martynka, sala_wykladowa)).
+
+invite(martynka) :-
+    guest_list(Guests),
+    retract(guest_list(Guests)),
+    assert(guest_list([Guests|rafalek])),
+    guest_list(Guests2),
+    retract(guest_list(Guests2)),
+    assert(guest_list([Guests2|martynka])),
+    retract(npc(rafalek, laboratorium_sieciowe)).
+
 invite(GuestName) :-
     guest_list(Guests),
     retract(guest_list(Guests)),
